@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout
 from PyQt5.QtCore import Qt
 
 class MainWindow(QWidget):
@@ -8,7 +8,7 @@ class MainWindow(QWidget):
 
         # Set up the main window
         self.setWindowTitle('Main Window')
-        self.setGeometry(100, 100, 300, 200)
+        self.setGeometry(100, 100, 1920, 1080)
 
         # Create buttons
         self.button1 = QPushButton('1', self)
@@ -21,7 +21,7 @@ class MainWindow(QWidget):
         self.button3.setFixedSize(200, 50)
 
         # Create layout and add buttons
-        layout = QVBoxLayout()
+        layout = QHBoxLayout()
         layout.addWidget(self.button1, alignment=Qt.AlignCenter)
         layout.addWidget(self.button2, alignment=Qt.AlignCenter)
         layout.addWidget(self.button3, alignment=Qt.AlignCenter)
@@ -37,3 +37,4 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
