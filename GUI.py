@@ -1,5 +1,29 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QTabWidget, QMainWindow, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QTabWidget, QMainWindow, QSpacerItem, QSizePolicy, QLabel
+
+class Tab1(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        label = QLabel("This is Tab 1", self)
+        layout.addWidget(label)
+        self.setLayout(layout)
+
+class Tab2(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        label = QLabel("This is Tab 2", self)
+        layout.addWidget(label)
+        self.setLayout(layout)
+
+class Tab3(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        label = QLabel("This is Tab 3", self)
+        layout.addWidget(label)
+        self.setLayout(layout)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -26,8 +50,6 @@ class MainWindow(QMainWindow):
 
         # Create layout for buttons and add them
         button_layout = QHBoxLayout()
-
-        # Add spacers and buttons to layout
         button_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         button_layout.addWidget(self.button1)
         button_layout.addWidget(self.button2)
@@ -37,18 +59,23 @@ class MainWindow(QMainWindow):
         # Create tab widget
         self.tabs = QTabWidget()
 
+        # Add the tabs
+        self.tab1 = Tab1()
+        self.tab2 = Tab2()
+        self.tab3 = Tab3()
+
+        self.tabs.addTab(self.tab1, "Tab 1")
+        self.tabs.addTab(self.tab2, "Tab 2")
+        self.tabs.addTab(self.tab3, "Tab 3")
+
         # Add layouts to the main layout
         vbox_layout.addLayout(button_layout)
         vbox_layout.addWidget(self.tabs)
 
         # Connect buttons to methods
-        self.button1.clicked.connect(lambda: self.open_tab("Tab 1"))
-        self.button2.clicked.connect(lambda: self.open_tab("Tab 2"))
-        self.button3.clicked.connect(lambda: self.open_tab("Tab 3"))
-
-    def open_tab(self, tab_name):
-        new_tab = QWidget()
-        self.tabs.addTab(new_tab, tab_name)
+        self.button1.clicked.connect(lambda: self.tabs.setCurrentWidget(self.tab1))
+        self.button2.clicked.connect(lambda: self.tabs.setCurrentWidget(self.tab2))
+        self.button3.clicked.connect(lambda: self.tabs.setCurrentWidget(self.tab3))
 
 # Entry point of the application
 if __name__ == '__main__':
@@ -58,4 +85,5 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
