@@ -26,9 +26,12 @@ class MainWindow(QMainWindow):
 
         # Create layout for buttons and add them
         button_layout = QHBoxLayout()
-        button_layout.addWidget(self.button1, alignment=Qt.AlignCenter)
-        button_layout.addWidget(self.button2, alignment=Qt.AlignCenter)
-        button_layout.addWidget(self.button3, alignment=Qt.AlignCenter)
+        button_layout.addWidget(self.button1)
+        button_layout.addWidget(self.button2)
+        button_layout.addWidget(self.button3)
+
+        # Align buttons to the center
+        button_layout.setAlignment(Qt.AlignCenter)
 
         # Create tab widget
         self.tabs = QTabWidget()
@@ -54,5 +57,3 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
-
-
