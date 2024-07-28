@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QTabWidget, QMainWindow
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QTabWidget, QMainWindow, QSpacerItem, QSizePolicy
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -26,12 +26,13 @@ class MainWindow(QMainWindow):
 
         # Create layout for buttons and add them
         button_layout = QHBoxLayout()
+
+        # Add spacers and buttons to layout
+        button_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         button_layout.addWidget(self.button1)
         button_layout.addWidget(self.button2)
         button_layout.addWidget(self.button3)
-
-        # Align buttons to the center
-        button_layout.setAlignment(Qt.AlignCenter)
+        button_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
 
         # Create tab widget
         self.tabs = QTabWidget()
@@ -57,3 +58,4 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
