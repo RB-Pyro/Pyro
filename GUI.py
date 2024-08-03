@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QSizePolicy, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QSizePolicy, QLabel, QSpacerItem
 from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtCore import Qt
 
@@ -38,25 +38,26 @@ class Tab2(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        layout = QVBoxLayout(self)
-        label = QLabel("This is Tab 2", self)
-        layout.addWidget(label)
-        
+        main_layout = QVBoxLayout(self)
+
         # Add Arm System button at the top right
         self.arm_button = QPushButton('Arm System', self)
         self.arm_button.setFixedSize(250, 100)
         self.arm_button.setStyleSheet("background-color: green; color: white;")
         self.arm_button.clicked.connect(self.arm_system)
 
-        arm_button_layout = QHBoxLayout()
-        arm_button_layout.addWidget(self.arm_button)
-        arm_button_layout.addStretch()
+        top_layout = QHBoxLayout()
+        top_layout.addStretch()  # This pushes the button to the right
+        top_layout.addWidget(self.arm_button)
         
-        layout.addLayout(arm_button_layout)
-        
+        main_layout.addLayout(top_layout)
+
+        label = QLabel("This is Tab 2", self)
+        main_layout.addWidget(label)
+
         # Create the grid layout
         grid_layout = QGridLayout()
-        
+
         # Add 20 buttons to the first 4x5 cells of the grid with circles
         self.buttons = []
         self.circles = []
@@ -73,15 +74,15 @@ class Tab2(QWidget):
                 self.circles.append(circle)
                 button_layout.addWidget(circle)
                 grid_layout.addLayout(button_layout, i, j)
-        
-        layout.addLayout(grid_layout)
-        
+
+        main_layout.addLayout(grid_layout)
+
         # Add the back button
         back_button = QPushButton('Back to Main', self)
         back_button.clicked.connect(self.go_back)
-        layout.addWidget(back_button)
-        
-        self.setLayout(layout)
+        main_layout.addWidget(back_button)
+
+        self.setLayout(main_layout)
 
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
@@ -179,6 +180,7 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
 
 
