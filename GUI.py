@@ -23,10 +23,34 @@ class Tab2(QWidget):
         layout = QVBoxLayout(self)
         label = QLabel("This is Tab 2", self)
         layout.addWidget(label)
+        
+        # Create the grid layout
+        grid_layout = QGridLayout()
+        
+        # Add 25 buttons to the first 5x5 cells of the grid
+        self.buttons = []
+        for i in range(5):
+            for j in range(5):
+                button = QPushButton(f'Button {i*5 + j + 1}', self)
+                button.setFixedSize(80, 80)
+                button.clicked.connect(self.create_button_callback(i, j))
+                self.buttons.append(button)
+                grid_layout.addWidget(button, i, j)
+        
+        layout.addLayout(grid_layout)
+        
+        # Add the back button
         back_button = QPushButton('Back to Main', self)
         back_button.clicked.connect(self.go_back)
         layout.addWidget(back_button)
+        
         self.setLayout(layout)
+
+    def create_button_callback(self, row, col):
+        def callback():
+            print(f'Button at {row}, {col} clicked')
+            # Add individual functionality here
+        return callback
 
     def go_back(self):
         self.main_window.show_main_page()
@@ -111,6 +135,7 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
 
 
