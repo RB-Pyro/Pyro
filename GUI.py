@@ -71,7 +71,7 @@ class Tab2(QWidget):
         for i in range(4):
             for j in range(5):
                 button_layout = QHBoxLayout()
-                button = QPushButton(f'Button {i*5 + j + 1}', self)
+                button = QPushButton(f'CUE {i*5 + j + 1}', self)
                 button.setFixedSize(150, 150)
                 button.clicked.connect(self.create_button_callback(i, j))
                 self.buttons.append(button)
