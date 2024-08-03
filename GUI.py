@@ -46,6 +46,11 @@ class Tab2(QWidget):
         self.arm_button.setStyleSheet("background-color: green; color: white;")
         self.arm_button.clicked.connect(self.arm_system)
 
+        self.reset_arm = QPushButton('Unarm System', self)
+        self.reset_arm.setFixedSize(250, 100)
+        self.reset_arm.setStyleSheet("background-color: yellow; color: black;")
+        self.reset_arm.clicked.connect(self.reset_system)
+
         top_layout = QHBoxLayout()
         top_layout.addStretch()  # This pushes the button to the right
         top_layout.addWidget(self.arm_button)
@@ -87,6 +92,10 @@ class Tab2(QWidget):
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
         self.arm_button.setStyleSheet("background-color: red; color: white;")
+
+    def reset_system(self):
+        self.arm_button.setText("Arm System")
+        self.arm_button.setStyleSheet("background-color: green; color: white;")
 
     def create_button_callback(self, row, col):
         def callback():
