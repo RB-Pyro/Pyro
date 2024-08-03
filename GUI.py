@@ -1,5 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QSizePolicy, QLabel
+from PyQt5.QtGui import QPainter, QBrush, QColor
+from PyQt5.QtCore import Qt
 
 class Tab1(QWidget):
     def __init__(self, main_window):
@@ -16,6 +18,22 @@ class Tab1(QWidget):
     def go_back(self):
         self.main_window.show_main_page()
 
+class CircleLabel(QLabel):
+    def __init__(self, color=Qt.red):
+        super().__init__()
+        self.color = color
+        self.setFixedSize(50, 50)
+
+    def set_color(self, color):
+        self.color = color
+        self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setBrush(QBrush(self.color, Qt.SolidPattern))
+        painter.setPen(Qt.NoPen)
+        painter.drawEllipse(0, 0, self.width(), self.height())
+
 class Tab2(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -27,15 +45,22 @@ class Tab2(QWidget):
         # Create the grid layout
         grid_layout = QGridLayout()
         
-        # Add 20 buttons to the first 4x5 cells of the grid
+        # Add 20 buttons to the first 4x5 cells of the grid with circles
         self.buttons = []
+        self.circles = []
         for i in range(4):
             for j in range(5):
+                button_layout = QHBoxLayout()
                 button = QPushButton(f'Button {i*5 + j + 1}', self)
-                button.setFixedSize(180, 180)
+                button.setFixedSize(150, 150)
                 button.clicked.connect(self.create_button_callback(i, j))
                 self.buttons.append(button)
-                grid_layout.addWidget(button, i, j)
+                button_layout.addWidget(button)
+
+                circle = CircleLabel()
+                self.circles.append(circle)
+                button_layout.addWidget(circle)
+                grid_layout.addLayout(button_layout, i, j)
         
         layout.addLayout(grid_layout)
         
@@ -51,6 +76,9 @@ class Tab2(QWidget):
             print(f'Button at {row}, {col} clicked')
             # Add individual functionality here
         return callback
+
+    def set_circle_color(self, index, color):
+        self.circles[index].set_color(color)
 
     def go_back(self):
         self.main_window.show_main_page()
@@ -135,6 +163,7 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
 
 
