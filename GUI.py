@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QTabWidget, QMainWindow, QSpacerItem, QSizePolicy, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QSizePolicy, QLabel
 
 class Tab1(QWidget):
     def __init__(self, main_window):
@@ -14,7 +14,7 @@ class Tab1(QWidget):
         self.setLayout(layout)
 
     def go_back(self):
-        self.main_window.go_back()
+        self.main_window.show_main_page()
 
 class Tab2(QWidget):
     def __init__(self, main_window):
@@ -29,7 +29,7 @@ class Tab2(QWidget):
         self.setLayout(layout)
 
     def go_back(self):
-        self.main_window.go_back()
+        self.main_window.show_main_page()
 
 class Tab3(QWidget):
     def __init__(self, main_window):
@@ -44,7 +44,7 @@ class Tab3(QWidget):
         self.setLayout(layout)
 
     def go_back(self):
-        self.main_window.go_back()
+        self.main_window.show_main_page()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -57,55 +57,51 @@ class MainWindow(QMainWindow):
         # Create central widget and set layout
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
+        self.stack = QStackedWidget(self.central_widget)
         self.vbox_layout = QVBoxLayout(self.central_widget)
+        self.vbox_layout.addWidget(self.stack)
+
+        # Create the main page widget
+        self.main_page = QWidget()
+        self.stack.addWidget(self.main_page)
+        self.grid_layout = QGridLayout(self.main_page)
 
         # Create buttons
-        self.button1 = QPushButton('1', self)
-        self.button2 = QPushButton('2', self)
-        self.button3 = QPushButton('3', self)
+        self.button1 = QPushButton('Button 1', self.main_page)
+        self.button2 = QPushButton('Button 2', self.main_page)
+        self.button3 = QPushButton('Button 3', self.main_page)
 
         # Set button sizes
-        self.button1.setFixedSize(200, 50)
-        self.button2.setFixedSize(200, 50)
-        self.button3.setFixedSize(200, 50)
+        self.button1.setFixedSize(300, 300)
+        self.button2.setFixedSize(300, 300)
+        self.button3.setFixedSize(300, 300)
 
-        # Create layout for buttons and add them
-        self.button_layout = QHBoxLayout()
-        self.button_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        self.button_layout.addWidget(self.button1)
-        self.button_layout.addWidget(self.button2)
-        self.button_layout.addWidget(self.button3)
-        self.button_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
-
-        # Create tab widget
-        self.tabs = QTabWidget()
-
-        # Add the layouts to the main layout
-        self.vbox_layout.addLayout(self.button_layout)
-        self.vbox_layout.addWidget(self.tabs)
+        # Add buttons to the grid layout
+        self.grid_layout.addWidget(self.button1, 0, 0)
+        self.grid_layout.addWidget(self.button2, 0, 1)
+        self.grid_layout.addWidget(self.button3, 0, 2)
 
         # Connect buttons to methods
-        self.button1.clicked.connect(lambda: self.show_tab(0))
-        self.button2.clicked.connect(lambda: self.show_tab(1))
-        self.button3.clicked.connect(lambda: self.show_tab(2))
+        self.button1.clicked.connect(lambda: self.show_tab(1))
+        self.button2.clicked.connect(lambda: self.show_tab(2))
+        self.button3.clicked.connect(lambda: self.show_tab(3))
 
-        # Add the tabs but hide them initially
+        # Create tab pages
         self.tab1 = Tab1(self)
         self.tab2 = Tab2(self)
         self.tab3 = Tab3(self)
-        self.tabs.addTab(self.tab1, "Tab 1")
-        self.tabs.addTab(self.tab2, "Tab 2")
-        self.tabs.addTab(self.tab3, "Tab 3")
-        self.tabs.setTabVisible(0, False)
-        self.tabs.setTabVisible(1, False)
-        self.tabs.setTabVisible(2, False)
+        self.stack.addWidget(self.tab1)
+        self.stack.addWidget(self.tab2)
+        self.stack.addWidget(self.tab3)
 
-    def show_tab(self, index):
-        self.tabs.setTabVisible(index, True)
-        self.tabs.setCurrentIndex(index)
+        # Initially show the main page
+        self.show_main_page()
 
-    def go_back(self):
-        self.tabs.setTabVisible(self.tabs.currentIndex(), False)
+    def show_tab(self, tab_index):
+        self.stack.setCurrentIndex(tab_index)
+
+    def show_main_page(self):
+        self.stack.setCurrentIndex(0)
 
 # Entry point of the application
 if __name__ == '__main__':
@@ -115,6 +111,7 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
 
 
