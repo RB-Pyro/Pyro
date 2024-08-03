@@ -27,12 +27,12 @@ class Tab2(QWidget):
         # Create the grid layout
         grid_layout = QGridLayout()
         
-        # Add 25 buttons to the first 5x5 cells of the grid
+        # Add 20 buttons to the first 4x5 cells of the grid
         self.buttons = []
-        for i in range(5):
+        for i in range(4):
             for j in range(5):
                 button = QPushButton(f'Button {i*5 + j + 1}', self)
-                button.setFixedSize(80, 80)
+                button.setFixedSize(150, 150)
                 button.clicked.connect(self.create_button_callback(i, j))
                 self.buttons.append(button)
                 grid_layout.addWidget(button, i, j)
@@ -135,6 +135,7 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
 
 
