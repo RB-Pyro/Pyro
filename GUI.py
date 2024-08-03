@@ -67,14 +67,15 @@ class Tab2(QWidget):
         label = QLabel("This is Tab 2", self)
         main_layout.addWidget(label)
 
-        # Create the box layout
+        # Create the grid layout
+        grid_layout = QGridLayout()
+
+        # Add 20 buttons to the first 4x5 cells of the grid with circles
         self.buttons = []
         self.circles = []
-
-        for i in range(4):  # Create 4 rows
-            row_layout = QHBoxLayout()
-            for j in range(5):  # Create 5 columns
-                button_layout = QVBoxLayout()  # Vertical layout for button and circle
+        for i in range(4):
+            for j in range(5):
+                button_layout = QHBoxLayout()
                 button = QPushButton(f'CUE {i*5 + j + 1}', self)
                 button.setFixedSize(150, 150)
                 button.clicked.connect(self.create_button_callback(i, j))
@@ -84,8 +85,9 @@ class Tab2(QWidget):
                 circle = CircleLabel()
                 self.circles.append(circle)
                 button_layout.addWidget(circle)
-                row_layout.addLayout(button_layout)
-            main_layout.addLayout(row_layout)
+                grid_layout.addLayout(button_layout, i, j)
+
+        main_layout.addLayout(grid_layout)
 
         # Add the back button
         back_button_layout = QHBoxLayout()
