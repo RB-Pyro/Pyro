@@ -144,7 +144,42 @@ class MainWindow(QMainWindow):
         self.button2.setFixedSize(300, 300)
         self.button3.setFixedSize(300, 300)
 
-        # Add buttons to the grid layou
+        # Add buttons to the grid layout
+        self.grid_layout.addWidget(self.button1, 0, 0)
+        self.grid_layout.addWidget(self.button2, 0, 1)
+        self.grid_layout.addWidget(self.button3, 0, 2)
+
+        # Connect buttons to methods
+        self.button1.clicked.connect(lambda: self.show_tab(1))
+        self.button2.clicked.connect(lambda: self.show_tab(2))
+        self.button3.clicked.connect(lambda: self.show_tab(3))
+
+        # Create tab pages
+        self.tab1 = Tab1(self)
+        self.tab2 = Tab2(self)
+        self.tab3 = Tab3(self)
+        self.stack.addWidget(self.tab1)
+        self.stack.addWidget(self.tab2)
+        self.stack.addWidget(self.tab3)
+
+        # Initially show the main page
+        self.show_main_page()
+
+    def show_tab(self, tab_index):
+        self.stack.setCurrentIndex(tab_index)
+
+    def show_main_page(self):
+        self.stack.setCurrentIndex(0)
+
+# Entry point of the application
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+
+    mainWin = MainWindow()
+    mainWin.show()
+
+    sys.exit(app.exec_())
+
 
 
 
