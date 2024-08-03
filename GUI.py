@@ -10,9 +10,16 @@ class Tab1(QWidget):
         layout = QVBoxLayout(self)
         label = QLabel("This is Tab 1", self)
         layout.addWidget(label)
+
+        # Add the back button
+        back_button_layout = QHBoxLayout()
+        back_button_layout.addStretch()
         back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
         back_button.clicked.connect(self.go_back)
-        layout.addWidget(back_button)
+        back_button_layout.addWidget(back_button)
+        layout.addLayout(back_button_layout)
+
         self.setLayout(layout)
 
     def go_back(self):
@@ -111,9 +118,16 @@ class Tab3(QWidget):
         layout = QVBoxLayout(self)
         label = QLabel("This is Tab 3", self)
         layout.addWidget(label)
+
+        # Add the back button
+        back_button_layout = QHBoxLayout()
+        back_button_layout.addStretch()
         back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
         back_button.clicked.connect(self.go_back)
-        layout.addWidget(back_button)
+        back_button_layout.addWidget(back_button)
+        layout.addLayout(back_button_layout)
+
         self.setLayout(layout)
 
     def go_back(self):
@@ -184,6 +198,7 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
 
 
