@@ -32,7 +32,7 @@ class Tab2(QWidget):
         for i in range(4):
             for j in range(5):
                 button = QPushButton(f'Button {i*5 + j + 1}', self)
-                button.setFixedSize(250, 250)
+                button.setFixedSize(180, 180)
                 button.clicked.connect(self.create_button_callback(i, j))
                 self.buttons.append(button)
                 grid_layout.addWidget(button, i, j)
