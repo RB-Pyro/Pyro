@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QSizePolicy, QLabel, QSpacerItem
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel
 from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtCore import Qt
 
@@ -167,21 +167,25 @@ class MainWindow(QMainWindow):
         self.button1 = QPushButton('Button 1', self.main_page)
         self.button2 = QPushButton('Button 2', self.main_page)
         self.button3 = QPushButton('Button 3', self.main_page)
+        self.settings_button = QPushButton('Settings', self.main_page)
 
         # Set button sizes
         self.button1.setFixedSize(300, 300)
         self.button2.setFixedSize(300, 300)
         self.button3.setFixedSize(300, 300)
+        self.settings_button.setFixedSize(300, 300)
 
         # Add buttons to the grid layout
         self.grid_layout.addWidget(self.button1, 0, 0)
         self.grid_layout.addWidget(self.button2, 0, 1)
         self.grid_layout.addWidget(self.button3, 0, 2)
+        self.grid_layout.addWidget(self.settings_button, 1, 1)
 
         # Connect buttons to methods
         self.button1.clicked.connect(lambda: self.show_tab(1))
         self.button2.clicked.connect(lambda: self.show_tab(2))
         self.button3.clicked.connect(lambda: self.show_tab(3))
+        self.settings_button.clicked.connect(self.show_settings)
 
         # Create tab pages
         self.tab1 = Tab1(self)
@@ -191,18 +195,6 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.tab2)
         self.stack.addWidget(self.tab3)
 
-        
-        self.settings_button = QPushButton('Settings', self.main_page)
-        self.settings_button.setFixedSize(100, 100)
-        self.grid_layout.addWidget(self.settings_button, 1, 1)
-        self.settings_button.clicked.connect(self.show_settings)
-
-        
-
-
-   
-        
-
         # Initially show the main page
         self.show_main_page()
 
@@ -211,6 +203,9 @@ class MainWindow(QMainWindow):
 
     def show_main_page(self):
         self.stack.setCurrentIndex(0)
+
+    def show_settings(self):
+        print("Settings button clicked")  # Replace with actual functionality
 
 # Entry point of the application
 if __name__ == '__main__':
