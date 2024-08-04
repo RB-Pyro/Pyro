@@ -173,7 +173,7 @@ class MainWindow(QMainWindow):
         self.button1.setFixedSize(300, 300)
         self.button2.setFixedSize(300, 300)
         self.button3.setFixedSize(300, 300)
-        self.settings_button.setFixedSize(300, 300)
+        self.settings_button.setFixedSize(150, 300)
 
         # Add buttons to the grid layout
         self.grid_layout.addWidget(self.button1, 0, 0)
