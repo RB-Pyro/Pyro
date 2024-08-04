@@ -179,9 +179,9 @@ class MainWindow(QMainWindow):
         self.grid_layout = QGridLayout(self.main_page)
 
         # Create buttons
-        self.button1 = QPushButton('Button 1', self.main_page)
-        self.button2 = QPushButton('Button 2', self.main_page)
-        self.button3 = QPushButton('Button 3', self.main_page)
+        self.button1 = QPushButton('Build A Script', self.main_page)
+        self.button2 = QPushButton('Manual Fire', self.main_page)
+        self.button3 = QPushButton('Scripted Show', self.main_page)
         self.settings_button = QPushButton('Settings', self.main_page)
 
         # Set button sizes
