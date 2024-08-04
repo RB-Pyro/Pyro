@@ -193,9 +193,9 @@ class MainWindow(QMainWindow):
 
         settings_layout = QHBoxLayout()
         settings_layout.addStretch()
-        settings_button = QPushButton('Back to Main', self)
+        settings_button = QPushButton('Settings', self)
         settings_button.setFixedHeight(50)
-        settings_button.clicked.connect(self.go_back)
+        settings_button.clicked.connect()
         settings_button.addWidget(settings_button)
         
 
