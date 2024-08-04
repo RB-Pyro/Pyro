@@ -191,6 +191,14 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.tab2)
         self.stack.addWidget(self.tab3)
 
+        settings_layout = QHBoxLayout()
+        settings_layout.addStretch()
+        settings_button = QPushButton('Back to Main', self)
+        settings_button.setFixedHeight(50)
+        settings_button.clicked.connect(self.go_back)
+        settings_button.addWidget(settings_button)
+        
+
         # Initially show the main page
         self.show_main_page()
 
