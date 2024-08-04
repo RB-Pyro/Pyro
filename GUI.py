@@ -70,18 +70,25 @@ class Tab2(QWidget):
         self.tab_number = 1  # You can change this to any integer
 
         # Create a QLabel to display the integer in a box
-        label = QLabel(f"Channel #:  {self.tab_number}", self)
+        label = QLabel(f"This is Tab {self.tab_number}", self)
         label.setFixedSize(200, 50)  # Set a fixed size for the box
         label.setAlignment(Qt.AlignCenter)  # Center the text
         label.setStyleSheet("border: 2px solid black; padding: 10px;")  # Add a border and padding
 
-        # Create a horizontal layout to center the label
+        # Create buttons
+        left_button = QPushButton('<', self)
+        right_button = QPushButton('>', self)
+
+        # Create a horizontal layout to center the label and add buttons
         label_layout = QHBoxLayout()
+        label_layout.addWidget(left_button)  # Add left button
         label_layout.addStretch()  # Pushes the label to the center
-        label_layout.addWidget(label)
+        label_layout.addWidget(label)  # Add the label
         label_layout.addStretch()  # Pushes the label to the center
+        label_layout.addWidget(right_button)  # Add right button
 
         main_layout.addLayout(label_layout)  # Add the centered layout to the main layout
+
 
 
         # Create the grid layout
