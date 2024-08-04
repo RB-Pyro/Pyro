@@ -143,6 +143,21 @@ class Tab3(QWidget):
     def go_back(self):
         self.main_window.show_main_page()
 
+class SettingsWindow(QWidget):
+    def __init__(self, main_window):
+        super().__init__()
+        self.main_window = main_window
+        self.setWindowTitle('Settings')
+        self.setGeometry(200, 200, 400, 300)
+        layout = QVBoxLayout(self)
+        label = QLabel("Settings", self)
+        layout.addWidget(label)
+
+        # Add settings layout and widgets here
+        # For example, you can add checkboxes, sliders, etc.
+
+        self.setLayout(layout)
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -173,13 +188,13 @@ class MainWindow(QMainWindow):
         self.button1.setFixedSize(300, 300)
         self.button2.setFixedSize(300, 300)
         self.button3.setFixedSize(300, 300)
-        self.settings_button.setFixedSize(300, 150)
+        self.settings_button.setFixedSize(300, 300)
 
         # Add buttons to the grid layout
         self.grid_layout.addWidget(self.button1, 0, 0)
         self.grid_layout.addWidget(self.button2, 0, 1)
         self.grid_layout.addWidget(self.button3, 0, 2)
-        self.grid_layout.addWidget(self.settings_button, 3, 1)
+        self.grid_layout.addWidget(self.settings_button, 1, 1)
 
         # Connect buttons to methods
         self.button1.clicked.connect(lambda: self.show_tab(1))
@@ -205,7 +220,8 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentIndex(0)
 
     def show_settings(self):
-        print("Settings button clicked")  # Replace with actual functionality
+        self.settings_window = SettingsWindow(self)
+        self.settings_window.show()
 
 # Entry point of the application
 if __name__ == '__main__':
@@ -215,4 +231,5 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
