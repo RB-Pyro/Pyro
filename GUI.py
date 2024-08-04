@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QSlider
 from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtCore import Qt
 
@@ -143,6 +143,7 @@ class Tab3(QWidget):
     def go_back(self):
         self.main_window.show_main_page()
 
+
 class SettingsWindow(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -153,10 +154,22 @@ class SettingsWindow(QWidget):
         label = QLabel("Settings", self)
         layout.addWidget(label)
 
-        # Add settings layout and widgets here
-        # For example, you can add checkboxes, sliders, etc.
+        # Add sliding switches
+        self.sliders = []
+        for i in range(5):
+            slider = QSlider(Qt.Horizontal, self)
+            slider.setRange(0, 100)  # Set the range of the slider
+            slider.setValue(50)  # Set initial value
+            slider.valueChanged.connect(lambda value, i=i: self.slider_changed(value, i))
+            layout.addWidget(slider)
+            self.sliders.append(slider)
 
         self.setLayout(layout)
+
+    def slider_changed(self, value, index):
+        print(f"Slider {index+1} value changed to {value}")
+        # Placeholder for actual functionality
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
