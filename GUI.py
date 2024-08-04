@@ -103,6 +103,10 @@ class Tab2(QWidget):
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
         self.arm_button.setStyleSheet("background-color: red; color: white;")
+        
+        # Show the armed alert
+        alert = Armed_Alert(self.main_window)
+        alert.show()
 
     def reset_system(self):
         self.arm_button.setText("Arm System")
@@ -121,11 +125,11 @@ class Tab2(QWidget):
         self.main_window.show_main_page()
 
 class Armed_Alert(QWidget):
-    def __init__ (self, main_window):
+    def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        self.setWindowTitle ('Armed Alert Warning')
-        self.geometry(200,200,400,300)
+        self.setWindowTitle('Armed Alert Warning')
+        self.setGeometry(200, 200, 400, 300)
         layout = QVBoxLayout(self)
         label = QLabel("Armed Alert", self)
         layout.addWidget(label)
