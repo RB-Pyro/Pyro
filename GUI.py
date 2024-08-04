@@ -143,6 +143,28 @@ class Tab3(QWidget):
     def go_back(self):
         self.main_window.show_main_page()
 
+class SettingsTab(QWidget):
+    def __init__(self, main_window):
+        super().__init__()
+        self.main_window = main_window
+        layout = QVBoxLayout(self)
+        label = QLabel("This is the Settings Tab", self)
+        layout.addWidget(label)
+
+        # Add the back button
+        back_button_layout = QHBoxLayout()
+        back_button_layout.addStretch()
+        back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
+        back_button.clicked.connect(self.go_back)
+        back_button_layout.addWidget(back_button)
+        layout.addLayout(back_button_layout)
+
+        self.setLayout(layout)
+
+    def go_back(self):
+        self.main_window.show_main_page()
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -167,32 +189,41 @@ class MainWindow(QMainWindow):
         self.button1 = QPushButton('Button 1', self.main_page)
         self.button2 = QPushButton('Button 2', self.main_page)
         self.button3 = QPushButton('Button 3', self.main_page)
+        self.settings_button = QPushButton('Settings', self.main_page)
 
         # Set button sizes
         self.button1.setFixedSize(300, 300)
         self.button2.setFixedSize(300, 300)
         self.button3.setFixedSize(300, 300)
+        self.settings_button.setFixedSize(100, 50)
 
         # Add buttons to the grid layout
         self.grid_layout.addWidget(self.button1, 0, 0)
         self.grid_layout.addWidget(self.button2, 0, 1)
         self.grid_layout.addWidget(self.button3, 0, 2)
 
+        # Create layout for the settings button and add it to the bottom right corner
+        settings_button_layout = QHBoxLayout()
+        settings_button_layout.addStretch()
+        settings_button_layout.addWidget(self.settings_button)
+        settings_button_layout.setAlignment(Qt.AlignRight)
+        self.grid_layout.addLayout(settings_button_layout, 1, 2, Qt.AlignBottom)
+
         # Connect buttons to methods
         self.button1.clicked.connect(lambda: self.show_tab(1))
         self.button2.clicked.connect(lambda: self.show_tab(2))
         self.button3.clicked.connect(lambda: self.show_tab(3))
+        self.settings_button.clicked.connect(lambda: self.show_tab(4))
 
         # Create tab pages
         self.tab1 = Tab1(self)
         self.tab2 = Tab2(self)
         self.tab3 = Tab3(self)
+        self.settings_tab = SettingsTab(self)
         self.stack.addWidget(self.tab1)
         self.stack.addWidget(self.tab2)
         self.stack.addWidget(self.tab3)
-
-   
-        
+        self.stack.addWidget(self.settings_tab)
 
         # Initially show the main page
         self.show_main_page()
@@ -211,16 +242,3 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
-
-
-
-
-
-
-
-
-
-
-
-
-
