@@ -197,17 +197,28 @@ class MainWindow(QMainWindow):
         self.button3.setFixedSize(300, 300)
         self.settings_button.setFixedSize(100, 50)
 
-        # Add buttons to the grid layout
-        self.grid_layout.addWidget(self.button1, 0, 0)
-        self.grid_layout.addWidget(self.button2, 0, 1)
-        self.grid_layout.addWidget(self.button3, 0, 2)
+        # Create a layout to center the buttons
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(self.button1)
+        button_layout.addWidget(self.button2)
+        button_layout.addWidget(self.button3)
+        button_layout.addStretch()
 
-        # Create layout for the settings button and add it to the bottom right corner
+        # Create a vertical layout to stack the centered buttons and the settings button
+        main_page_layout = QVBoxLayout()
+        main_page_layout.addStretch()
+        main_page_layout.addLayout(button_layout)
+        main_page_layout.addStretch()
+
+        # Create a layout for the settings button
         settings_button_layout = QHBoxLayout()
         settings_button_layout.addStretch()
         settings_button_layout.addWidget(self.settings_button)
-        settings_button_layout.setAlignment(Qt.AlignRight)
-        self.grid_layout.addLayout(settings_button_layout, 1, 2, Qt.AlignBottom)
+
+        main_page_layout.addLayout(settings_button_layout)
+
+        self.main_page.setLayout(main_page_layout)
 
         # Connect buttons to methods
         self.button1.clicked.connect(lambda: self.show_tab(1))
@@ -242,3 +253,4 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
