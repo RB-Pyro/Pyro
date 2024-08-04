@@ -67,7 +67,7 @@ class Tab2(QWidget):
         main_layout.addLayout(top_layout)
 
         # Define an integer variable
-        self.tab_number = 2  # You can change this to any integer
+        self.tab_number = 1  # You can change this to any integer
 
         # Create a QLabel to display the integer in a box
         label = QLabel(f"Channel #:  {self.tab_number}", self)
