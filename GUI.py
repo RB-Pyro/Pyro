@@ -66,6 +66,7 @@ class Tab2(QWidget):
         
         main_layout.addLayout(top_layout)
 
+        # Define an integer variable
         self.tab_number = 2  # You can change this to any integer
 
         # Create a QLabel to display the integer in a box
@@ -74,7 +75,14 @@ class Tab2(QWidget):
         label.setAlignment(Qt.AlignCenter)  # Center the text
         label.setStyleSheet("border: 2px solid black; padding: 10px;")  # Add a border and padding
 
-        main_layout.addWidget(label)
+        # Create a horizontal layout to center the label
+        label_layout = QHBoxLayout()
+        label_layout.addStretch()  # Pushes the label to the center
+        label_layout.addWidget(label)
+        label_layout.addStretch()  # Pushes the label to the center
+
+        main_layout.addLayout(label_layout)  # Add the centered layout to the main layout
+
 
         # Create the grid layout
         grid_layout = QGridLayout()
