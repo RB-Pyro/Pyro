@@ -41,8 +41,6 @@ class CircleLabel(QLabel):
         painter.setPen(Qt.NoPen)
         painter.drawEllipse(0, 0, self.width(), self.height())
 
-
-
 class Tab2(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -66,36 +64,33 @@ class Tab2(QWidget):
         
         main_layout.addLayout(top_layout)
 
-            # Define an integer variable
+        # Define an integer variable
         self.tab_number = 1 # You can change this to any integer
 
         # Create a QLabel to display the integer in a box
-        label = QLabel(f"Channel #:  {self.tab_number}", self)
-        label.setFixedSize(300, 50)  # Set a fixed size for the box
-        label.setAlignment(Qt.AlignCenter)  # Center the text
-        label.setStyleSheet("border: 2px solid black; padding: 10px;")  # Add a border and padding
+        self.label = QLabel(f"Channel #:  {self.tab_number}", self)
+        self.label.setFixedSize(300, 50)  # Set a fixed size for the box
+        self.label.setAlignment(Qt.AlignCenter)  # Center the text
+        self.label.setStyleSheet("border: 2px solid black; padding: 10px;")  # Add a border and padding
 
         # Create buttons and set their fixed size to match the label's height
         left_button = QPushButton('<', self)
         left_button.setFixedSize(50, 50)  # Set size to match label's height
-        self.left_button.clicked.connect(self.decrease_mod_num)
+        left_button.clicked.connect(self.decrease_mod_num)
 
         right_button = QPushButton('>', self)
         right_button.setFixedSize(50, 50)  # Set size to match label's height
-        self.right_button.clicked.connect(self.increase_mod_num)
+        right_button.clicked.connect(self.increase_mod_num)
 
         # Create a horizontal layout to center the label and add buttons
         label_layout = QHBoxLayout()
         label_layout.addStretch()  # Pushes the content to the center
         label_layout.addWidget(left_button)  # Add left button
-        label_layout.addWidget(label)  # Add the label
+        label_layout.addWidget(self.label)  # Add the label
         label_layout.addWidget(right_button)  # Add right button
         label_layout.addStretch()  # Pushes the content to the center
 
         main_layout.addLayout(label_layout)  # Add the centered layout to the main layout
-
-
-
 
         # Create the grid layout
         grid_layout = QGridLayout()
@@ -178,11 +173,13 @@ class Tab2(QWidget):
         self.main_window.show_main_page()
 
     def decrease_mod_num(self):
-            if self.tab_number > 1:
-                -- self.tab_number
+        if self.tab_number > 1:
+            self.tab_number -= 1
+        self.label.setText(f"Channel #:  {self.tab_number}")
 
     def increase_mod_num(self):
-            ++ self.tab_number
+        self.tab_number += 1
+        self.label.setText(f"Channel #:  {self.tab_number}")
 
 class Armed_Alert(QWidget):
     def __init__(self, main_window):
@@ -194,8 +191,6 @@ class Armed_Alert(QWidget):
         label = QLabel("Armed Alert", self)
         layout.addWidget(label)
         self.setLayout(layout)
-
-
 
 class Tab3(QWidget):
     def __init__(self, main_window):
@@ -218,7 +213,6 @@ class Tab3(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
 
 class SettingsWindow(QWidget):
     def __init__(self, main_window):
@@ -244,7 +238,6 @@ class SettingsWindow(QWidget):
         is_checked = state == Qt.Checked
         print(f"Checkbox {index+1} is {'checked' if is_checked else 'unchecked'}")
         # Placeholder for actual functionality
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -319,5 +312,6 @@ if __name__ == '__main__':
     mainWin.show()
 
     sys.exit(app.exec_())
+
 
 
