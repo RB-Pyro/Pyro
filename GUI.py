@@ -191,6 +191,15 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.tab2)
         self.stack.addWidget(self.tab3)
 
+        
+        self.settings_button = QPushButton('Settings', self.main_page)
+        self.settings_button.setFixedSize(100, 100)
+        self.grid_layout.addWidget(self.settings_button, 1, 1)
+        self.settings_button.clicked.connect(self.show_settings)
+
+        
+
+
    
         
 
