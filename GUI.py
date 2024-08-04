@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QSlider
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QSlider, QRadioButton
 from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtCore import Qt
 
@@ -154,21 +154,23 @@ class SettingsWindow(QWidget):
         label = QLabel("Settings", self)
         layout.addWidget(label)
 
-        # Add sliding switches
-        self.sliders = []
+        # Add radio buttons
+        self.radio_buttons = []
+        self.selected_radio_button = None  # To keep track of the selected button
+
         for i in range(5):
-            slider = QSlider(Qt.Horizontal, self)
-            slider.setRange(0, 100)  # Set the range of the slider
-            slider.setValue(50)  # Set initial value
-            slider.valueChanged.connect(lambda value, i=i: self.slider_changed(value, i))
-            layout.addWidget(slider)
-            self.sliders.append(slider)
+            radio_button = QRadioButton(f'Option {i+1}', self)
+            radio_button.toggled.connect(lambda checked, i=i: self.radio_changed(checked, i))
+            layout.addWidget(radio_button)
+            self.radio_buttons.append(radio_button)
 
         self.setLayout(layout)
 
-    def slider_changed(self, value, index):
-        print(f"Slider {index+1} value changed to {value}")
-        # Placeholder for actual functionality
+    def radio_changed(self, checked, index):
+        if checked:
+            self.selected_radio_button = index
+            print(f"Radio button {index+1} selected")
+            # Placeholder for actual functionality
 
 
 class MainWindow(QMainWindow):
