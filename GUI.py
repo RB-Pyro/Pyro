@@ -78,9 +78,11 @@ class Tab2(QWidget):
         # Create buttons and set their fixed size to match the label's height
         left_button = QPushButton('<', self)
         left_button.setFixedSize(50, 50)  # Set size to match label's height
+        self.left_button.clicked.connect(self.decrease_mod_num)
 
         right_button = QPushButton('>', self)
         right_button.setFixedSize(50, 50)  # Set size to match label's height
+        self.right_button.clicked.connect(self.increase_mod_num)
 
         # Create a horizontal layout to center the label and add buttons
         label_layout = QHBoxLayout()
@@ -174,6 +176,13 @@ class Tab2(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
+    def decrease_mod_num(self):
+            if self.tab_number > 1:
+                -- self.tab_number
+
+    def increase_mod_num(self):
+            ++ self.tab_number
 
 class Armed_Alert(QWidget):
     def __init__(self, main_window):
