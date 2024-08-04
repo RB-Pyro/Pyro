@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QSlider, QRadioButton
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QSlider, QRadioButton, QCheckBox
 from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtCore import Qt
 
@@ -154,23 +154,20 @@ class SettingsWindow(QWidget):
         label = QLabel("Settings", self)
         layout.addWidget(label)
 
-        # Add radio buttons
-        self.radio_buttons = []
-        self.selected_radio_button = None  # To keep track of the selected button
-
+        # Add checkboxes
+        self.checkboxes = []
         for i in range(5):
-            radio_button = QRadioButton(f'Option {i+1}', self)
-            radio_button.toggled.connect(lambda checked, i=i: self.radio_changed(checked, i))
-            layout.addWidget(radio_button)
-            self.radio_buttons.append(radio_button)
+            checkbox = QCheckBox(f'Checkbox {i+1}', self)
+            checkbox.stateChanged.connect(lambda state, i=i: self.checkbox_changed(state, i))
+            layout.addWidget(checkbox)
+            self.checkboxes.append(checkbox)
 
         self.setLayout(layout)
 
-    def radio_changed(self, checked, index):
-        if checked:
-            self.selected_radio_button = index
-            print(f"Radio button {index+1} selected")
-            # Placeholder for actual functionality
+    def checkbox_changed(self, state, index):
+        is_checked = state == Qt.Checked
+        print(f"Checkbox {index+1} is {'checked' if is_checked else 'unchecked'}")
+        # Placeholder for actual functionality
 
 
 class MainWindow(QMainWindow):
