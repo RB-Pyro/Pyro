@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QSlider, QRadioButton, QCheckBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QDialog, QRadioButton, QCheckBox
 from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtCore import Qt
 
@@ -41,6 +41,8 @@ class CircleLabel(QLabel):
         painter.setPen(Qt.NoPen)
         painter.drawEllipse(0, 0, self.width(), self.height())
 
+
+
 class Tab2(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -51,7 +53,7 @@ class Tab2(QWidget):
         self.arm_button = QPushButton('Arm System', self)
         self.arm_button.setFixedSize(250, 100)
         self.arm_button.setStyleSheet("background-color: green; color: white;")
-        self.arm_button.clicked.connect(self.arm_system)
+        self.arm_button.clicked.connect(self.show_confirmation_dialog)
 
         self.reset_arm = QPushButton('Unarm System', self)
         self.reset_arm.setFixedSize(250, 100)
@@ -100,13 +102,36 @@ class Tab2(QWidget):
 
         self.setLayout(main_layout)
 
+    def show_confirmation_dialog(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Confirmation")
+        layout = QVBoxLayout(dialog)
+
+        label = QLabel("Confirm you want to arm system", dialog)
+        layout.addWidget(label)
+
+        yes_button = QPushButton("YES", dialog)
+        yes_button.clicked.connect(lambda: self.confirm_arm(dialog))
+        layout.addWidget(yes_button)
+
+        no_button = QPushButton("NO", dialog)
+        no_button.clicked.connect(lambda: self.cancel_arm(dialog))
+        layout.addWidget(no_button)
+
+        dialog.setLayout(layout)
+        dialog.exec_()  # Show the dialog modally
+
+    def confirm_arm(self, dialog):
+        self.arm_system()
+        dialog.accept()  # Close the dialog
+
+    def cancel_arm(self, dialog):
+        self.reset_system()
+        dialog.accept()  # Close the dialog
+
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
         self.arm_button.setStyleSheet("background-color: red; color: white;")
-        
-        # Show the armed alert
-        alert = Armed_Alert(self.main_window)
-        alert.show()
 
     def reset_system(self):
         self.arm_button.setText("Arm System")
@@ -134,6 +159,7 @@ class Armed_Alert(QWidget):
         label = QLabel("Armed Alert", self)
         layout.addWidget(label)
         self.setLayout(layout)
+
 
 
 class Tab3(QWidget):
