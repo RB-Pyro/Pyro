@@ -45,7 +45,9 @@ class Tab2(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        main_layout = QVBoxLayout(self)
+        self.tab_number = 1  # Initialize the tab number
+        self.stack = QStackedWidget(self)  # Create a stacked widget for buttons
+        self.main_layout = QVBoxLayout(self)
 
         # Add Arm System button at the top right
         self.arm_button = QPushButton('Arm System', self)
@@ -53,66 +55,110 @@ class Tab2(QWidget):
         self.arm_button.setStyleSheet("background-color: green; color: white;")
         self.arm_button.clicked.connect(self.show_confirmation_dialog)
 
-        self.reset_arm = QPushButton('Unarm System', self)
-        self.reset_arm.setFixedSize(250, 100)
-        self.reset_arm.setStyleSheet("background-color: yellow; color: black;")
-        self.reset_arm.clicked.connect(self.reset_system)
-
         top_layout = QHBoxLayout()
         top_layout.addStretch()  # This pushes the button to the right
         top_layout.addWidget(self.arm_button)
-        
-        main_layout.addLayout(top_layout)
-
-        # Define an integer variable
-        self.tab_number = 1 # You can change this to any integer
+        self.main_layout.addLayout(top_layout)
 
         # Create a QLabel to display the integer in a box
         self.label = QLabel(f"Channel #:  {self.tab_number}", self)
-        self.label.setFixedSize(300, 50)  # Set a fixed size for the box
-        self.label.setAlignment(Qt.AlignCenter)  # Center the text
-        self.label.setStyleSheet("border: 2px solid black; padding: 10px;")  # Add a border and padding
+        self.label.setFixedSize(300, 50)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setStyleSheet("border: 2px solid black; padding: 10px;")
+        self.main_layout.addWidget(self.label)
 
-        # Create buttons and set their fixed size to match the label's height
+        # Create buttons for changing the tab number
         left_button = QPushButton('<', self)
-        left_button.setFixedSize(50, 50)  # Set size to match label's height
+        left_button.setFixedSize(50, 50)
         left_button.clicked.connect(self.decrease_mod_num)
 
         right_button = QPushButton('>', self)
-        right_button.setFixedSize(50, 50)  # Set size to match label's height
+        right_button.setFixedSize(50, 50)
         right_button.clicked.connect(self.increase_mod_num)
 
         # Create a horizontal layout to center the label and add buttons
         label_layout = QHBoxLayout()
-        label_layout.addStretch()  # Pushes the content to the center
-        label_layout.addWidget(left_button)  # Add left button
-        label_layout.addWidget(self.label)  # Add the label
-        label_layout.addWidget(right_button)  # Add right button
-        label_layout.addStretch()  # Pushes the content to the center
+        label_layout.addStretch()
+        label_layout.addWidget(left_button)
+        label_layout.addWidget(self.label)
+        label_layout.addWidget(right_button)
+        label_layout.addStretch()
+        self.main_layout.addLayout(label_layout)
 
-        main_layout.addLayout(label_layout)  # Add the centered layout to the main layout
+        # Create the stacked widget for buttons
+        self.stack = QStackedWidget()
+        self.main_layout.addWidget(self.stack)
 
-        # Create the grid layout
-        grid_layout = QGridLayout()
+        # Create button sets for each tab number
+        self.create_button_set(1)
+        self.create_button_set(2)
+        self.create_button_set(3)
 
-        # Add 20 buttons to the first 4x5 cells of the grid with circles
-        self.buttons = []
-        self.circles = []
-        for i in range(4):
-            for j in range(5):
-                button_layout = QHBoxLayout()
-                button = QPushButton(f'CUE {i*5 + j + 1}', self)
-                button.setFixedSize(150, 150)
-                button.clicked.connect(self.create_button_callback(i, j))
-                self.buttons.append(button)
-                button_layout.addWidget(button)
+        # Add the back button
+        back_button_layout = QHBoxLayout()
+        back_button_layout.addStretch()
+        back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
+        back_button.clicked.connect(self.go_back)
+        back_button_layout.addWidget(back_button)
+        self.main_layout.addLayout(back_button_layout)
 
-                circle = CircleLabel()
-                self.circles.append(circle)
-                button_layout.addWidget(circle)
-                grid_layout.addLayout(button_layout, i, j)
+        self.setLayout(self.main_layout)
+        self.update_display()  # Show the initial tab
 
-        main_layout.addLayout(grid_layout)
+    def create_button_set(self, tab_number):
+        # Create a new widget for the button set
+        button_widget = QWidget()
+        grid_layout = QGridLayout(button_widget)
+
+        button_configs = {
+            1: ['CUE 1', 'CUE 2', 'CUE 3', 'CUE 4', 'CUE 5'],
+            2: ['CUE 6', 'CUE 7', 'CUE 8', 'CUE 9', 'CUE 10'],
+            3: ['CUE 11', 'CUE 12', 'CUE 13', 'CUE 14', 'CUE 15'],
+            
+        }
+
+        # Get the current button configuration based on tab_number
+        current_config = button_configs.get(tab_number, [])
+        
+        for i in range(4):  # Number of rows
+            for j in range(5):  # Number of columns
+                if (i * 5 + j) < len(current_config):
+                    button_layout = QHBoxLayout()
+                    button_text = current_config[i * 5 + j]
+
+                    button = QPushButton(button_text, self)
+                    button.setFixedSize(150, 150)
+                    button.clicked.connect(self.create_button_callback(i, j))
+                    button_layout.addWidget(button)
+
+                    circle = CircleLabel()
+                    button_layout.addWidget(circle)
+                    grid_layout.addLayout(button_layout, i, j)
+
+        self.stack.addWidget(button_widget)  # Add the new button widget to the stack
+
+    def update_display(self):
+        self.stack.setCurrentIndex(self.tab_number - 1)  # Update the displayed tab
+        self.label.setText(f"Channel #:  {self.tab_number}")
+
+    def decrease_mod_num(self):
+        if self.tab_number > 1:
+            self.tab_number -= 1
+            self.update_display()
+
+    def increase_mod_num(self):
+        self.tab_number += 1
+        self.update_display()
+
+    def create_button_callback(self, row, col):
+        def callback():
+            print(f'Button at {row}, {col} clicked')
+            # Add individual functionality here
+        return callback
+
+    # The rest of your class remains unchanged...
+
 
         # Add the back button
         back_button_layout = QHBoxLayout()
