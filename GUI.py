@@ -120,6 +120,17 @@ class Tab2(QWidget):
     def go_back(self):
         self.main_window.show_main_page()
 
+class Armed_Alert(QWidget):
+    def __init__ (self, main_window):
+        super().__init__()
+        self.main_window = main_window
+        self.setWindowTitle ('Armed Alert Warning')
+        self.geometry(200,200,400,300)
+        layout = QVBoxLayout(self)
+        label = QLabel("Armed Alert", self)
+        layout.addWidget(label)
+        self.setLayout(layout)
+
 
 class Tab3(QWidget):
     def __init__(self, main_window):
