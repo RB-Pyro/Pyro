@@ -226,7 +226,7 @@ class Armed_Alert(QWidget):
         super().__init__()
         self.main_window = main_window
         self.setWindowTitle('Armed Alert Warning')
-        self.setGeometry(200, 200, 400, 300)
+        self.setGeometry(400, 400, 400, 300)
         layout = QVBoxLayout(self)
         label = QLabel("Armed Alert", self)
         layout.addWidget(label)
