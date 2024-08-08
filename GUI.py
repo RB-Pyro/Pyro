@@ -51,7 +51,7 @@ class Tab2(QWidget):
 
         # Create a grid layout for the arm and reset buttons
         top_layout = QGridLayout()
-        show_time = 0 #placeholder
+        show_time = 0.00 #placeholder
 
         self.show_timer = QLabel(f'Show Timer: \n{show_time}',self)
         self.show_timer.setStyleSheet("background-color: white; color: #222222; font-size: 24px;")
