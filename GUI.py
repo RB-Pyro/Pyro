@@ -197,6 +197,10 @@ class Tab2(QWidget):
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
         self.system_armed = True
+        self.toogle_color()
+
+
+    def toogle_color(self):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.toggle_color)
 
@@ -212,6 +216,7 @@ class Tab2(QWidget):
 
         # Update the button's background color
         self.arm_button.setStyleSheet(f"background-color: {self.current_color};")
+
 
 
      
