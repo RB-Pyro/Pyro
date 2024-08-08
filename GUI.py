@@ -212,11 +212,15 @@ class Tab2(QWidget):
                 # Switch between Bright Red and Dark Red
         if self.system_armed and self.current_color == "#FF0000":
             self.current_color = "#B22222"  # Dark Red
+
+        elif  self.current_color = "#FF0000"  # Bright Red
+            
         else:
-            self.current_color = "#FF0000"  # Bright Red
+            self.current_color = "green"
+           
 
         # Update the button's background color
-        self.arm_button.setStyleSheet(f"background-color: {self.current_color};")
+            self.arm_button.setStyleSheet(f"background-color: {self.current_color};")
 
 
 
