@@ -50,7 +50,7 @@ class Tab2(QWidget):
         self.setStyleSheet("background-color: lightblue; color: black;")  # Set a background color for the main widget and text color
 
         # Create a horizontal layout for the arm and reset buttons
-        top_layout = QHBoxLayout()
+        top_layout = QGridLayout() 
         
         # Add Arm System button
         self.arm_button = QPushButton('Arm System', self)
