@@ -167,7 +167,7 @@ class Tab2(QWidget):
         # Start the timer to flash every 500 milliseconds
         self.timer.start(500)
 
-        self.current_color = "#FF0000"  # Start with Bright Red
+        
 
 
 
