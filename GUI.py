@@ -48,6 +48,11 @@ class Tab2(QWidget):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins to the main layout
         self.setStyleSheet("background-color: lightblue;")  # Set a background color for the main widget
+          # Set background color for top layout
+        top_widget = QWidget()
+        top_widget.setLayout(top_layout)
+        top_widget.setStyleSheet("background-color: lightgray; padding: 5px; color: black;")
+        main_layout.addWidget(top_widget)
 
         # Add Arm System button at the top right
         self.arm_button = QPushButton('Arm System', self)
@@ -64,11 +69,7 @@ class Tab2(QWidget):
         top_layout.addStretch()  # This pushes the button to the right
         top_layout.addWidget(self.arm_button)
 
-        # Set background color for top layout
-        top_widget = QWidget()
-        top_widget.setLayout(top_layout)
-        top_widget.setStyleSheet("background-color: lightgray; padding: 5px;")
-        main_layout.addWidget(top_widget)
+      
 
         # Define an integer variable
         self.tab_number = 1  # You can change this to any integer
