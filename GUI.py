@@ -192,6 +192,7 @@ class Tab2(QWidget):
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
         self.system_armed = True
+        self.arm_button.setStyleSheet("background-color: #FF0000;")
 
 
 
