@@ -51,6 +51,12 @@ class Tab2(QWidget):
 
         # Create a grid layout for the arm and reset buttons
         top_layout = QGridLayout()
+        show_time = 0 #placeholder
+
+        self.show_timer = QLabel(f'Show Timer: {show_time}',self)
+        self.show_timer.setStyleSheet("background-color: white; color: #222222")
+        self.show_timer.setFixedSize(200, 100)
+
 
         # Add Arm System button
         self.arm_button = QPushButton('Arm System', self)
