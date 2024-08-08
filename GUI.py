@@ -71,8 +71,10 @@ class Tab2(QWidget):
         self.reset_arm.clicked.connect(self.reset_system)
 
         # Add buttons to the grid layout
-        top_layout.addWidget(self.arm_button, 0, 0)  # Place in row 0, column 0
+        top_layout.addWidget(self.show_timer,0,0)
+        top_layout.addWidget(self.arm_button, 0, 1)  # Place in row 0, column 0
         top_layout.addWidget(self.reset_arm, 0, 2)  # Place in row 0, column 1
+        
 
         # Set background color for top layout
         top_widget = QWidget()
