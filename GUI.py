@@ -214,12 +214,12 @@ class Tab2(QWidget):
             self.current_color = "#B22222"  # Dark Red
 
         else:
-            self.system_armed = False
+             self.current_color = "#FF0000"
         
            
 
         # Update the button's background color
-            self.arm_button.setStyleSheet(f"background-color: {self.current_color};")
+             self.arm_button.setStyleSheet(f"background-color: {self.current_color};")
 
 
 
