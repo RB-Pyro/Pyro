@@ -161,6 +161,13 @@ class Tab2(QWidget):
         self.setLayout(main_layout)
 
     # ... rest of your methods remain unchanged
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.toggle_color)
+
+        # Start the timer to flash every 500 milliseconds
+        self.timer.start(500)
+
+        self.current_color = "#FF0000"  # Start with Bright Red
 
 
 
@@ -199,15 +206,9 @@ class Tab2(QWidget):
         self.system_armed = True
         self.toggle_color()
 
-
+      
     def toggle_color(self):
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.toggle_color)
-
-        # Start the timer to flash every 500 milliseconds
-        self.timer.start(500)
-
-        self.current_color = "#FF0000"  # Start with Bright Red
+    
                 # Switch between Bright Red and Dark Red
         if self.system_armed and self.current_color == "#FF0000":
             self.current_color = "#B22222"  # Dark Red
