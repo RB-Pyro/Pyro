@@ -215,9 +215,9 @@ class Tab2(QWidget):
 
         elif  self.current_color == "#FF0000":
             self.current_color = "#B22222" # Bright Red
-            
         else:
-            self.current_color = "green"
+            self.system_armed = False
+        
            
 
         # Update the button's background color
