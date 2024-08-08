@@ -213,7 +213,8 @@ class Tab2(QWidget):
         if self.system_armed and self.current_color == "#FF0000":
             self.current_color = "#B22222"  # Dark Red
 
-        elif  self.current_color = "#FF0000"  # Bright Red
+        elif  self.current_color == "#FF0000":
+            self.current_color = "#B22222" # Bright Red
             
         else:
             self.current_color = "green"
