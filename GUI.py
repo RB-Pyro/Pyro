@@ -204,7 +204,7 @@ class Tab2(QWidget):
             self.arm_button.setStyleSheet("background-color: #FF0000; color: white;")
             self.timer.start(500)
             self.arm_button.setStyleSheet("background-color: #B22222; color: white;")
-            self.timer.start(500)
+            self.timer.stop()
             
 
 
