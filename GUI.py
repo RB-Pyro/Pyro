@@ -199,12 +199,14 @@ class Tab2(QWidget):
         self.system_armed = True
         self.timer = QTimer(self)
 
-        while self.system_armed:
+        if self.system_armed:
 
             self.arm_button.setStyleSheet("background-color: #FF0000; color: white;")
             self.timer.start(500)
             self.arm_button.setStyleSheet("background-color: #B22222; color: white;")
             self.timer.stop()
+        else:
+            self.arm_button.setStyleSheet("background-color: green; color: black;")
             
 
 
