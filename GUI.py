@@ -197,7 +197,7 @@ class Tab2(QWidget):
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
         self.system_armed = True
-        self.toogle_color()
+        self.toggle_color()
 
 
     def toogle_color(self):
