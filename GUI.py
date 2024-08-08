@@ -87,12 +87,12 @@ class Tab2(QWidget):
         # Create buttons and set their fixed size to match the label's height
         left_button = QPushButton('<', self)
         left_button.setFixedSize(50, 50)  # Set size to match label's height
-        left_button.setStyleSheet("background-color: #222222")
+        left_button.setStyleSheet("background-color: #222222; color: white;")
         left_button.clicked.connect(self.decrease_mod_num)
 
         right_button = QPushButton('>', self)
         right_button.setFixedSize(50, 50)  # Set size to match label's height
-        right_button.setStyleSheet("background-color: #222222")
+        right_button.setStyleSheet("background-color: #222222; color: white;")
         right_button.clicked.connect(self.increase_mod_num)
 
         # Create a horizontal layout to center the label and add buttons
