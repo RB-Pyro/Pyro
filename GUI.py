@@ -198,16 +198,23 @@ class Tab2(QWidget):
         self.arm_button.setText('!SYSTEM ARMED!')
         self.system_armed = True
         self.timer = QTimer(self)
+        self.timer.timeout.connect(self.toggle_color)
 
-        if self.system_armed:
+        # Start the timer to flash every 500 milliseconds
+        self.timer.start(500)
 
-            self.arm_button.setStyleSheet("background-color: #FF0000; color: white;")
-            self.timer.start(500)
-            self.arm_button.setStyleSheet("background-color: #B22222; color: white;")
-            self.timer.stop()
+        self.current_color = "#FF0000"  # Start with Bright Red
+                # Switch between Bright Red and Dark Red
+        if self.system_armed and self.current_color == "#FF0000":
+            self.current_color = "#B22222"  # Dark Red
         else:
-            self.arm_button.setStyleSheet("background-color: green; color: black;")
-            
+            self.current_color = "#FF0000"  # Bright Red
+
+        # Update the button's background color
+        self.arm_button.setStyleSheet(f"background-color: {self.current_color};")
+
+
+     
 
 
 
