@@ -46,6 +46,8 @@ class Tab2(QWidget):
         super().__init__()
         self.main_window = main_window
         main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins to the main layout
+        self.setStyleSheet("background-color: lightblue;")  # Set a background color for the main widget
 
         # Add Arm System button at the top right
         self.arm_button = QPushButton('Arm System', self)
@@ -61,11 +63,15 @@ class Tab2(QWidget):
         top_layout = QHBoxLayout()
         top_layout.addStretch()  # This pushes the button to the right
         top_layout.addWidget(self.arm_button)
-        
-        main_layout.addLayout(top_layout)
+
+        # Set background color for top layout
+        top_widget = QWidget()
+        top_widget.setLayout(top_layout)
+        top_widget.setStyleSheet("background-color: lightgray; padding: 5px;")
+        main_layout.addWidget(top_widget)
 
         # Define an integer variable
-        self.tab_number = 1 # You can change this to any integer
+        self.tab_number = 1  # You can change this to any integer
 
         # Create a QLabel to display the integer in a box
         self.label = QLabel(f"Channel #:  {self.tab_number}", self)
@@ -90,7 +96,11 @@ class Tab2(QWidget):
         label_layout.addWidget(right_button)  # Add right button
         label_layout.addStretch()  # Pushes the content to the center
 
-        main_layout.addLayout(label_layout)  # Add the centered layout to the main layout
+        # Set background color for label layout
+        label_widget = QWidget()
+        label_widget.setLayout(label_layout)
+        label_widget.setStyleSheet("background-color: lightyellow; padding: 5px;")
+        main_layout.addWidget(label_widget)
 
         # Create the grid layout
         grid_layout = QGridLayout()
@@ -101,7 +111,7 @@ class Tab2(QWidget):
         for i in range(4):
             for j in range(5):
                 button_layout = QHBoxLayout()
-                button = QPushButton(f'CUE {i*5 + j + 1}', self)
+                button = QPushButton(f'CUE {i * 5 + j + 1}', self)
                 button.setFixedSize(150, 150)
                 button.clicked.connect(self.create_button_callback(i, j))
                 self.buttons.append(button)
@@ -112,7 +122,11 @@ class Tab2(QWidget):
                 button_layout.addWidget(circle)
                 grid_layout.addLayout(button_layout, i, j)
 
-        main_layout.addLayout(grid_layout)
+        # Set background color for the grid layout
+        grid_widget = QWidget()
+        grid_widget.setLayout(grid_layout)
+        grid_widget.setStyleSheet("background-color: lightcoral; padding: 5px;")
+        main_layout.addWidget(grid_widget)
 
         # Add the back button
         back_button_layout = QHBoxLayout()
@@ -121,9 +135,17 @@ class Tab2(QWidget):
         back_button.setFixedHeight(50)
         back_button.clicked.connect(self.go_back)
         back_button_layout.addWidget(back_button)
-        main_layout.addLayout(back_button_layout)
+
+        # Set background color for back button layout
+        back_button_widget = QWidget()
+        back_button_widget.setLayout(back_button_layout)
+        back_button_widget.setStyleSheet("background-color: lightgreen; padding: 5px;")
+        main_layout.addWidget(back_button_widget)
 
         self.setLayout(main_layout)
+
+    # ... rest of your methods remain unchanged
+
 
     def show_confirmation_dialog(self):
         dialog = QDialog(self)
