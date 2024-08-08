@@ -49,20 +49,25 @@ class Tab2(QWidget):
         main_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins to the main layout
         self.setStyleSheet("background-color: lightblue; color: black;")  # Set a background color for the main widget and text color
 
-        # Add Arm System button at the top right
+        # Create a horizontal layout for the arm and reset buttons
+        top_layout = QHBoxLayout()
+        
+        # Add Arm System button
         self.arm_button = QPushButton('Arm System', self)
         self.arm_button.setFixedSize(250, 100)
         self.arm_button.setStyleSheet("background-color: green; color: black;")
         self.arm_button.clicked.connect(self.show_confirmation_dialog)
-
+        
+        # Add Unarm System button
         self.reset_arm = QPushButton('Unarm System', self)
         self.reset_arm.setFixedSize(250, 100)
         self.reset_arm.setStyleSheet("background-color: yellow; color: black;")
         self.reset_arm.clicked.connect(self.reset_system)
 
-        top_layout = QHBoxLayout()
-        top_layout.addStretch()  # This pushes the button to the right
+        # Add both buttons to the top layout
+        top_layout.addStretch()  # This pushes the buttons to the right
         top_layout.addWidget(self.arm_button)
+        top_layout.addWidget(self.reset_arm)
 
         # Set background color for top layout
         top_widget = QWidget()
