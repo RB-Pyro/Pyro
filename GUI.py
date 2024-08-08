@@ -200,7 +200,7 @@ class Tab2(QWidget):
         self.toggle_color()
 
 
-    def toogle_color(self):
+    def toggle_color(self):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.toggle_color)
 
