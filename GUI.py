@@ -47,17 +47,12 @@ class Tab2(QWidget):
         self.main_window = main_window
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins to the main layout
-        self.setStyleSheet("background-color: lightblue;")  # Set a background color for the main widget
-          # Set background color for top layout
-        top_widget = QWidget()
-        top_widget.setLayout(top_layout)
-        top_widget.setStyleSheet("background-color: lightgray; padding: 5px; color: black;")
-        main_layout.addWidget(top_widget)
+        self.setStyleSheet("background-color: lightblue; color: black;")  # Set a background color for the main widget and text color
 
         # Add Arm System button at the top right
         self.arm_button = QPushButton('Arm System', self)
         self.arm_button.setFixedSize(250, 100)
-        self.arm_button.setStyleSheet("background-color: green; color: white;")
+        self.arm_button.setStyleSheet("background-color: green; color: black;")
         self.arm_button.clicked.connect(self.show_confirmation_dialog)
 
         self.reset_arm = QPushButton('Unarm System', self)
@@ -69,7 +64,11 @@ class Tab2(QWidget):
         top_layout.addStretch()  # This pushes the button to the right
         top_layout.addWidget(self.arm_button)
 
-      
+        # Set background color for top layout
+        top_widget = QWidget()
+        top_widget.setLayout(top_layout)
+        top_widget.setStyleSheet("background-color: lightgray;")  # No padding to ensure buttons aren't blocked
+        main_layout.addWidget(top_widget)
 
         # Define an integer variable
         self.tab_number = 1  # You can change this to any integer
@@ -78,7 +77,7 @@ class Tab2(QWidget):
         self.label = QLabel(f"Channel #:  {self.tab_number}", self)
         self.label.setFixedSize(300, 50)  # Set a fixed size for the box
         self.label.setAlignment(Qt.AlignCenter)  # Center the text
-        self.label.setStyleSheet("border: 2px solid black; padding: 10px;")  # Add a border and padding
+        self.label.setStyleSheet("border: 2px solid black; padding: 10px; color: black;")  # Add a border and padding
 
         # Create buttons and set their fixed size to match the label's height
         left_button = QPushButton('<', self)
@@ -100,7 +99,7 @@ class Tab2(QWidget):
         # Set background color for label layout
         label_widget = QWidget()
         label_widget.setLayout(label_layout)
-        label_widget.setStyleSheet("background-color: lightyellow; padding: 5px;")
+        label_widget.setStyleSheet("background-color: lightyellow;")  # No padding to ensure buttons aren't blocked
         main_layout.addWidget(label_widget)
 
         # Create the grid layout
@@ -126,7 +125,7 @@ class Tab2(QWidget):
         # Set background color for the grid layout
         grid_widget = QWidget()
         grid_widget.setLayout(grid_layout)
-        grid_widget.setStyleSheet("background-color: lightcoral; padding: 5px;")
+        grid_widget.setStyleSheet("background-color: lightcoral;")  # No padding to ensure buttons aren't blocked
         main_layout.addWidget(grid_widget)
 
         # Add the back button
@@ -140,10 +139,13 @@ class Tab2(QWidget):
         # Set background color for back button layout
         back_button_widget = QWidget()
         back_button_widget.setLayout(back_button_layout)
-        back_button_widget.setStyleSheet("background-color: lightgreen; padding: 5px;")
+        back_button_widget.setStyleSheet("background-color: lightgreen;")  # No padding to ensure buttons aren't blocked
         main_layout.addWidget(back_button_widget)
 
         self.setLayout(main_layout)
+
+    # ... rest of your methods remain unchanged
+
 
     # ... rest of your methods remain unchanged
 
