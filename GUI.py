@@ -1,7 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QDialog, QRadioButton, QCheckBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QDialog, QRadioButton, QCheckBox,
 from PyQt5.QtGui import QPainter, QBrush, QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
+
+
 
 class Tab1(QWidget):
     def __init__(self, main_window):
@@ -48,7 +50,7 @@ class Tab2(QWidget):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins to the main layout
         self.setStyleSheet("background-color: lightblue; color: black;")  # Set a background color for the main widget and text color
-
+        self.system_armed = False
         # Create a grid layout for the arm and reset buttons
         top_layout = QGridLayout()
         show_time = 0.00 #placeholder
@@ -194,9 +196,21 @@ class Tab2(QWidget):
 
     def arm_system(self):
         self.arm_button.setText('!SYSTEM ARMED!')
-        self.arm_button.setStyleSheet("background-color: red; color: white;")
+        self.system_armed = True
+        self.timer = QTimer(self)
+
+        while self.system_armed:
+
+            self.arm_button.setStyleSheet("background-color: #FF0000; color: white;")
+            self.timer.start(500)
+            self.arm_button.setStyleSheet("background-color: #B22222; color: white;")
+            self.timer.start(500)
+            
+
+
 
     def reset_system(self):
+        self.system_armed = False
         self.arm_button.setText("Arm System")
         self.arm_button.setStyleSheet("background-color: green; color: white;")
 
