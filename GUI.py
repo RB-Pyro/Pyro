@@ -25,7 +25,7 @@ class Tab1(QWidget):
         
         # Set a larger font for the labels
         label_font = QFont()
-        label_font.setPointSize(36)  # Set font size (e.g., 12 points)
+        label_font.setPointSize(30)  # Set font size (e.g., 12 points)
         
         # Define labels and their texts
         labels = ["Name", "Channel", "Cue", "Time"]
