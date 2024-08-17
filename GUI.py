@@ -30,7 +30,7 @@ class Tab1(QWidget):
         
         # Define a fixed width for the labels
         label_width = 80
-        
+        label_h = 80
         # Add labels and input fields in a vertical layout within the horizontal layout
         labels = ["Name", "Channel", "Cue", "Time"]
         for label_text in labels:
@@ -41,6 +41,7 @@ class Tab1(QWidget):
             label_box.setFont(label_font)  # Apply the larger font to the label
             label_box.setAlignment(Qt.AlignCenter)  # Center the label horizontally
             label_box.setFixedWidth(label_width)  # Set a fixed width for the label box
+            label_box.setFixedHeight(label_h)
             label_box.setStyleSheet("background-color: lightgray; padding: 5px;")  # Style the label as a box
             
             # Add the label box and input field to the vbox
