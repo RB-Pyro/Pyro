@@ -79,16 +79,17 @@ class Tab1(QWidget):
         # Add the left side widget to the grid layout, below the red widget
         main_layout.addWidget(left_side_widget, 2, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
-        # Add the back button
+        # Adjust the back button placement
         back_button = QPushButton('Back to Main', self)
         back_button.setFixedHeight(50)
         back_button.clicked.connect(self.go_back)
-        main_layout.addWidget(back_button, 2, 0, 1, len(labels) + 1)  # Span across all columns
+        main_layout.addWidget(back_button, 4, 0, 1, len(labels) + 1)  # Move to the row after the new widget
 
         self.setLayout(main_layout)
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
