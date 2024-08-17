@@ -90,15 +90,15 @@ class Tab1(QWidget):
         right_side_grid = QGridLayout(right_side_widget)
         
         # Add 3 buttons manually to the right side grid layout
-        button1 = QPushButton("Button 1", self)
+        self.button1 = QPushButton("Button 1", self)
         button2 = QPushButton("Button 2", self)
         button3 = QPushButton("Button 3", self)
         
         # Connect Button 1 to a method that handles input data
-        button1.clicked.connect(self.handle_button1_click)
+        self.button1.clicked.connect(self.handle_button1_click)
         
         # Add buttons to the grid layout
-        right_side_grid.addWidget(button1, 0, 0)
+        right_side_grid.addWidget(self.button1, 0, 0)
         right_side_grid.addWidget(button2, 1, 0)
         right_side_grid.addWidget(button3, 2, 0)
         
@@ -139,9 +139,9 @@ class Tab1(QWidget):
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
+    def go_back(self):
+        self.main_window.show_main_page()
 
-        def go_back(self):
-            self.main_window.show_main_page()
 
 
 
