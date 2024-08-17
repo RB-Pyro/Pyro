@@ -28,6 +28,8 @@ class Tab1(QWidget):
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("background-color: lightgray; padding: 5px;")
             label_grid.addWidget(label, 0, i)  # Add labels to the grid layout
+
+        label_widget.setFixedHeight(100)
         
         # Create a grid layout for the input fields
         input_grid = QGridLayout()
