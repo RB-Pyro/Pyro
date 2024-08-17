@@ -33,7 +33,7 @@ class Tab1(QWidget):
             label = QLabel(label_text, self)
             label.setFont(label_font)
             label.setAlignment(Qt.AlignCenter)
-            label.setStyleSheet("background-color: lightgray; padding: 5px;")
+            label.setStyleSheet("background-color: lightgray;")
             # Add labels to the label grid layout
             label_grid.addWidget(label, 0, i)  # Row 0, Column i
         
