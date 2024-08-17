@@ -12,52 +12,40 @@ class Tab1(QWidget):
         
         layout = QVBoxLayout(self)
         
-        # Create a QWidget to represent the row with input fields
-        input_row_widget = QWidget(self)
+        # Create a QWidget for the label and input field grids
+        grid_widget = QWidget(self)
         
-        # Set background color for the row
-        palette = input_row_widget.palette()
-        palette.setColor(QPalette.Background, QColor(220, 220, 220))  # Light gray color
-        input_row_widget.setAutoFillBackground(True)
-        input_row_widget.setPalette(palette)
-        
-        # Create a horizontal layout for the label-input pairs
-        input_layout = QHBoxLayout(input_row_widget)
-        
-        # Set a larger font for the labels
+        # Create a grid layout for the labels
+        label_grid = QGridLayout()
         label_font = QFont()
         label_font.setPointSize(12)  # Set font size (e.g., 12 points)
         
-        # Define a fixed width for the labels
-        label_width = 80
-        label_h = 80
-        # Add labels and input fields in a vertical layout within the horizontal layout
+        # Define labels and their texts
         labels = ["Name", "Channel", "Cue", "Time"]
-        for label_text in labels:
-            vbox = QVBoxLayout()
-            
-            # Create a QLabel to act as a box for the label
-            label_box = QLabel(label_text, self)
-            label_box.setFont(label_font)  # Apply the larger font to the label
-            label_box.setAlignment(Qt.AlignCenter)  # Center the label horizontally
-            label_box.setFixedWidth(label_width)  # Set a fixed width for the label box
-            label_box.setFixedHeight(label_h)
-            label_box.setStyleSheet("background-color: lightgray; padding: 5px;")  # Style the label as a box
-            
-            # Add the label box and input field to the vbox
-            vbox.addWidget(label_box)
+        for i, label_text in enumerate(labels):
+            label = QLabel(label_text, self)
+            label.setFont(label_font)
+            label.setAlignment(Qt.AlignCenter)
+            label.setStyleSheet("background-color: lightgray; padding: 5px;")
+            label_grid.addWidget(label, 0, i)  # Add labels to the grid layout
+        
+        # Create a grid layout for the input fields
+        input_grid = QGridLayout()
+        for i in range(len(labels)):
             input_field = QLineEdit(self)
-            input_field.setPlaceholderText(f"Enter {label_text}")
-            vbox.addWidget(input_field)
-            
-            # Add the vbox to the horizontal layout
-            input_layout.addLayout(vbox)
+            input_field.setPlaceholderText(f"Enter {labels[i]}")
+            input_grid.addWidget(input_field, 0, i)  # Add input fields to the grid layout
         
-        # Set the layout of the input_row_widget
-        input_row_widget.setLayout(input_layout)
+        # Create a vertical layout to hold the label grid and input field grid
+        vbox = QVBoxLayout()
+        vbox.addLayout(label_grid)
+        vbox.addLayout(input_grid)
         
-        # Add the row widget to the main layout
-        layout.addWidget(input_row_widget)
+        # Set the layout of the grid_widget
+        grid_widget.setLayout(vbox)
+        
+        # Add the grid_widget to the main layout
+        layout.addWidget(grid_widget)
         
         # Add the back button
         back_button_layout = QHBoxLayout()
@@ -72,6 +60,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 class CircleLabel(QLabel):
     def __init__(self, color=Qt.red):
