@@ -32,13 +32,28 @@ class Tab1(QWidget):
         labels = ["Name", "Channel", "Cue", "Time"]
         for label_text in labels:
             vbox = QVBoxLayout()
+            
+            # Create a frame to act as a box for the label
+            label_box = QFrame(self)
+            label_box.setFrameShape(QFrame.Box)
+            label_box.setLineWidth(1)
+            
             label = QLabel(label_text, self)
             label.setFont(label_font)  # Apply the larger font to the label
             label.setAlignment(Qt.AlignCenter)  # Center the label horizontally
+            
+            # Add the label to the label box
+            label_box_layout = QVBoxLayout(label_box)
+            label_box_layout.addWidget(label)
+            label_box_layout.setContentsMargins(5, 5, 5, 5)  # Add padding inside the box
+            
+            # Add the label box and input field to the vbox
+            vbox.addWidget(label_box)
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {label_text}")
-            vbox.addWidget(label)
             vbox.addWidget(input_field)
+            
+            # Add the vbox to the horizontal layout
             input_layout.addLayout(vbox)
         
         # Set the layout of the input_row_widget
