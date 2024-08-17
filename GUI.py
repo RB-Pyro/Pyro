@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox
-from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette
+from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QTimer
 
 
