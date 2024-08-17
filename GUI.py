@@ -18,14 +18,14 @@ class Tab1(QWidget):
         label_container.setFixedHeight(50)  # Set the height of the container to 50px
         
         # Set background color for the label container
-        label_container.setStyleSheet("background-color: lightblue;")  # Light blue background for row 0
+       # label_container.setStyleSheet("background-color: lightblue;")  # Light blue background for row 0
         
         # Create a grid layout for the labels within the container
         label_grid = QGridLayout(label_container)
         
         # Set a larger font for the labels
         label_font = QFont()
-        label_font.setPointSize(30)  # Set font size (e.g., 12 points)
+        label_font.setPointSize(24)  # Set font size (e.g., 12 points)
         
         # Define labels and their texts
         labels = ["Name", "Channel", "Cue", "Time"]
