@@ -162,8 +162,6 @@ class Tab1(QWidget):
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
-    def go_back(self):
-        self.main_window.show_main_page()
 
 class CircleLabel(QLabel):
     def __init__(self, color=Qt.red):
