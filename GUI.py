@@ -11,6 +11,9 @@ from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit
 from PyQt5.QtGui import QPalette, QColor
 
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit
+from PyQt5.QtGui import QPalette, QColor, QFont
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -34,11 +37,16 @@ class Tab1(QWidget):
         # Create a horizontal layout for the label-input pairs
         input_layout = QHBoxLayout(input_row_widget)
         
+        # Set a larger font for the labels
+        label_font = QFont()
+        label_font.setPointSize(24)  # Set font size (e.g., 12 points)
+        
         # Add labels and input fields in a vertical layout within the horizontal layout
         labels = ["Name", "Channel", "Cue", "Time"]
         for label_text in labels:
             vbox = QVBoxLayout()
             label = QLabel(label_text, self)
+            label.setFont(label_font)  # Apply the larger font to the label
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {label_text}")
             vbox.addWidget(label)
@@ -64,6 +72,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
