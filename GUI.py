@@ -262,7 +262,12 @@ class MainWindow(QMainWindow):
         self.tab2 = Tab2(self)
         self.stacked_widget.addWidget(self.tab1)
         self.stacked_widget.addWidget(self.tab2)
+        
+        # Set the window to full screen
+        self.showFullScreen()
+
         self.show()
+
 
     def show_main_page(self):
         self.stacked_widget.setCurrentWidget(self.tab1)
