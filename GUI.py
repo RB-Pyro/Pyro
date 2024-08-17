@@ -14,9 +14,11 @@ class Tab1(QWidget):
         
         # Create a QWidget for the label and input field grids
         grid_widget = QWidget(self)
+        grid_layout = QVBoxLayout(grid_widget)
         
-        # Create a grid layout for the labels
-        label_grid = QGridLayout()
+        # Create a QWidget for the label grid with fixed height
+        label_widget = QWidget(self)
+        label_grid = QGridLayout(label_widget)
         label_font = QFont()
         label_font.setPointSize(12)  # Set font size (e.g., 12 points)
         
@@ -28,7 +30,8 @@ class Tab1(QWidget):
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("background-color: lightgray; padding: 5px;")
             label_grid.addWidget(label, 0, i)  # Add labels to the grid layout
-
+        
+        # Set fixed height for the label widget
         label_widget.setFixedHeight(100)
         
         # Create a grid layout for the input fields
@@ -38,13 +41,9 @@ class Tab1(QWidget):
             input_field.setPlaceholderText(f"Enter {labels[i]}")
             input_grid.addWidget(input_field, 0, i)  # Add input fields to the grid layout
         
-        # Create a vertical layout to hold the label grid and input field grid
-        vbox = QVBoxLayout()
-        vbox.addLayout(label_grid)
-        vbox.addLayout(input_grid)
-        
-        # Set the layout of the grid_widget
-        grid_widget.setLayout(vbox)
+        # Add the label widget and input grid to the main grid layout
+        grid_layout.addWidget(label_widget)
+        grid_layout.addLayout(input_grid)
         
         # Add the grid_widget to the main layout
         layout.addWidget(grid_widget)
@@ -62,6 +61,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 class CircleLabel(QLabel):
