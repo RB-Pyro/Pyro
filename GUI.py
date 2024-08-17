@@ -12,7 +12,7 @@ class ScrollableItem(QWidget):
         
         # Create and set up the label
         self.label = QLabel(text, self)
-        self.label.setStyleSheet("background-color: white; padding: 5px;")
+        self.label.setStyleSheet( "padding: 5px;")
         self.layout().addWidget(self.label)
         
         # Create and set up the delete button
@@ -61,7 +61,7 @@ class Tab1(QWidget):
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {labels[i]}")
             input_field.setFixedHeight(40)
-            input_field.setStyleSheet("background-color: white; color: black; padding: 5px;")
+            input_field.setStyleSheet("color: black; padding: 5px;")
             self.input_fields.append(input_field)
             self.input_grid.addWidget(input_field, 0, i)
         
