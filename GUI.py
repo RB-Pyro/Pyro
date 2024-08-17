@@ -72,6 +72,13 @@ class Tab1(QWidget):
         # Add the right side widget to the grid layout, spanning the last column and all rows
         main_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
+        # Add another widget below the red one on the left
+        left_side_widget = QWidget(self)
+        left_side_widget.setStyleSheet("background-color: lightgreen;")  # Light green background color
+        
+        # Add the left side widget to the grid layout, below the red widget
+        main_layout.addWidget(left_side_widget, 2, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
+        
         # Add the back button
         back_button = QPushButton('Back to Main', self)
         back_button.setFixedHeight(50)
@@ -82,6 +89,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
