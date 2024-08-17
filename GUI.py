@@ -5,6 +5,10 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit, QGridLayout
+from PyQt5.QtGui import QPalette, QColor, QFont
+from PyQt5.QtCore import Qt
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -18,6 +22,9 @@ class Tab1(QWidget):
         # Create a QWidget with fixed height for the labels
         label_container = QWidget(self)
         label_container.setFixedHeight(50)  # Set the height of the container to 50px
+        
+        # Set background color for the label container
+        label_container.setStyleSheet("background-color: lightblue;")  # Light blue background for row 0
         
         # Create a grid layout for the labels within the container
         label_grid = QGridLayout(label_container)
@@ -46,8 +53,15 @@ class Tab1(QWidget):
             # Add input fields to the second row of the grid layout
             grid_layout.addWidget(input_field, 1, i)  # Row 1, Column i
         
-        # Add the grid layout to the main layout
-        layout.addLayout(grid_layout)
+        # Create a QWidget for the input fields with a background color
+        input_container = QWidget(self)
+        input_container.setStyleSheet("background-color: lightgreen;")  # Light green background for row 1
+        
+        # Add the input grid to the input_container
+        input_container.setLayout(grid_layout)
+        
+        # Add the input_container to the grid layout
+        layout.addWidget(input_container)
         
         # Add the back button
         back_button_layout = QHBoxLayout()
@@ -62,6 +76,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
