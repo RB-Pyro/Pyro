@@ -119,7 +119,7 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Create a horizontal layout to hold the input texts
+        # Create a new horizontal layout
         horizontal_layout = QHBoxLayout()
 
         # Add text from input fields to the horizontal layout
@@ -133,14 +133,15 @@ class Tab1(QWidget):
                 print(f"Added label with text: {text}")
 
         # Clear previous layout from scroll_content if it exists
-        if self.scroll_content.layout():
+        old_layout = self.scroll_content.layout()
+        if old_layout:
             # Remove all widgets from the previous layout
-            for i in reversed(range(self.scroll_content.layout().count())):
-                widget = self.scroll_content.layout().itemAt(i).widget()
-                if widget:
-                    widget.deleteLater()
+            while old_layout.count():
+                item = old_layout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
             # Remove the previous layout from scroll_content
-            self.scroll_content.layout().setParent(None)
+            self.scroll_content.setLayout(None)
 
         # Set the new horizontal layout to the scroll_content widget
         self.scroll_content.setLayout(horizontal_layout)
@@ -152,6 +153,7 @@ class Tab1(QWidget):
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+
 
 
 
