@@ -5,7 +5,6 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 
-
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -15,6 +14,13 @@ class Tab1(QWidget):
         
         # Create a grid layout for the labels and input fields
         grid_layout = QGridLayout()
+        
+        # Create a QWidget with fixed height for the labels
+        label_container = QWidget(self)
+        label_container.setFixedHeight(50)  # Set the height of the container to 50px
+        
+        # Create a grid layout for the labels within the container
+        label_grid = QGridLayout(label_container)
         
         # Set a larger font for the labels
         label_font = QFont()
@@ -27,8 +33,11 @@ class Tab1(QWidget):
             label.setFont(label_font)
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("background-color: lightgray; padding: 5px;")
-            # Add labels to the first row of the grid layout
-            grid_layout.addWidget(label, 0, i)  # Row 0, Column i
+            # Add labels to the label grid layout
+            label_grid.addWidget(label, 0, i)  # Row 0, Column i
+        
+        # Add the label container to the first row of the main grid layout
+        grid_layout.addWidget(label_container, 0, 0, 1, len(labels))  # Span across all columns
         
         # Create input fields
         for i in range(len(labels)):
@@ -53,6 +62,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
