@@ -71,7 +71,7 @@ class Tab1(QWidget):
         right_side_grid = QGridLayout(right_side_widget)
         
         # Add 5 buttons to the right side grid layout
-        button_texts = [f"Button {i+1}" for i in range(5)]
+        button_texts = [f"Button {i+1}" for i in range(3)]
         for i, text in enumerate(button_texts):
             button = QPushButton(text, self)
             right_side_grid.addWidget(button, i, 0)
