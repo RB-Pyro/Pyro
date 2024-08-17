@@ -37,6 +37,7 @@ class Tab1(QWidget):
             label_box = QFrame(self)
             label_box.setFrameShape(QFrame.Box)
             label_box.setLineWidth(1)
+            label_box.setFixedWidth(50) 
             
             label = QLabel(label_text, self)
             label.setFont(label_font)  # Apply the larger font to the label
