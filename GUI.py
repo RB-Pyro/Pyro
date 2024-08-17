@@ -75,7 +75,8 @@ class Tab1(QWidget):
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
         self.scroll_content = QWidget()
-        self.scroll_layout = QVBoxLayout(self.scroll_content)
+        # Create a grid layout for the scroll_content
+        self.scroll_layout = QGridLayout(self.scroll_content)
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll_area.setWidget(self.scroll_content)
         
@@ -90,15 +91,15 @@ class Tab1(QWidget):
         right_side_grid = QGridLayout(right_side_widget)
         
         # Add 3 buttons manually to the right side grid layout
-        self.button1 = QPushButton("Button 1", self)
+        button1 = QPushButton("Button 1", self)
         button2 = QPushButton("Button 2", self)
         button3 = QPushButton("Button 3", self)
         
         # Connect Button 1 to a method that handles input data
-        self.button1.clicked.connect(self.handle_button1_click)
+        button1.clicked.connect(self.handle_button1_click)
         
         # Add buttons to the grid layout
-        right_side_grid.addWidget(self.button1, 0, 0)
+        right_side_grid.addWidget(button1, 0, 0)
         right_side_grid.addWidget(button2, 1, 0)
         right_side_grid.addWidget(button3, 2, 0)
         
@@ -118,21 +119,35 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Clear all widgets from the existing scroll_layout
-        for i in reversed(range(self.scroll_layout.count())):
-            widget = self.scroll_layout.itemAt(i).widget()
-            if widget is not None:
-                widget.deleteLater()
-
-        # Add text from input fields to the scroll layout
-        for input_field in self.input_fields:
+        # Clear previous layout from scroll_content if it exists
+        old_layout = self.scroll_content.layout()
+        if old_layout:
+            # Remove all widgets from the previous layout
+            while old_layout.count():
+                item = old_layout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+            # Remove the previous layout from scroll_content
+            self.scroll_content.setLayout(None)
+        
+        # Create a new grid layout for the scroll_content
+        horizontal_layout = QGridLayout(self.scroll_content)
+        
+        # Add text from input fields to the horizontal layout
+        for col, input_field in enumerate(self.input_fields):
             text = input_field.text()
             if text:
                 label = QLabel(text, self)
                 label.setStyleSheet("border: 1px solid black; padding: 5px;")  # Optional: Add border and padding for visibility
-                self.scroll_layout.addWidget(label)
+                horizontal_layout.addWidget(label, 0, col)
                 # Debug statement to confirm labels are added
                 print(f"Added label with text: {text}")
+        
+        # Set the new horizontal layout to the scroll_content widget
+        self.scroll_content.setLayout(horizontal_layout)
+        
+        # Ensure the scroll area updates to show the new content
+        self.scroll_area.setWidget(self.scroll_content)
 
         # Clear input fields and reset placeholders
         for input_field in self.input_fields:
@@ -141,6 +156,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
