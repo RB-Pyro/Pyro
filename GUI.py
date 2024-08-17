@@ -8,6 +8,9 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit, QFormLayout
 from PyQt5.QtGui import QPalette, QColor
 
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit
+from PyQt5.QtGui import QPalette, QColor
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -28,19 +31,22 @@ class Tab1(QWidget):
         input_row_widget.setAutoFillBackground(True)
         input_row_widget.setPalette(palette)
         
-        # Create a form layout for the labels and input fields
-        form_layout = QFormLayout(input_row_widget)
+        # Create a horizontal layout for the label-input pairs
+        input_layout = QHBoxLayout(input_row_widget)
         
-        # Add labels and input fields to the form layout
+        # Add labels and input fields in a vertical layout within the horizontal layout
         labels = ["Name", "Channel", "Cue", "Time"]
         for label_text in labels:
+            vbox = QVBoxLayout()
             label = QLabel(label_text, self)
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {label_text}")
-            form_layout.addRow(label, input_field)
+            vbox.addWidget(label)
+            vbox.addWidget(input_field)
+            input_layout.addLayout(vbox)
         
         # Set the layout of the input_row_widget
-        input_row_widget.setLayout(form_layout)
+        input_row_widget.setLayout(input_layout)
         
         # Add the row widget to the main layout
         layout.addWidget(input_row_widget)
@@ -58,6 +64,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 class CircleLabel(QLabel):
