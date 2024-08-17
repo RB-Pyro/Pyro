@@ -9,6 +9,10 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayo
 from PyQt5.QtGui import QPalette, QColor, QFont
 from PyQt5.QtCore import Qt
 
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit, QGridLayout
+from PyQt5.QtGui import QPalette, QColor, QFont
+from PyQt5.QtCore import Qt
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -16,7 +20,7 @@ class Tab1(QWidget):
         
         layout = QVBoxLayout(self)
         
-        # Create a grid layout for the labels and input fields
+        # Create a grid layout for the labels, input fields, and the right side widget
         grid_layout = QGridLayout()
         
         # Create a QWidget with fixed height for the labels
@@ -57,11 +61,18 @@ class Tab1(QWidget):
         input_container = QWidget(self)
         input_container.setStyleSheet("background-color: lightgreen;")  # Light green background for row 1
         
-        # Add the input grid to the input_container
+        # Set the layout for the input_container and add it to the grid layout
         input_container.setLayout(grid_layout)
         
-        # Add the input_container to the grid layout
+        # Add the input_container to the main layout
         layout.addWidget(input_container)
+        
+        # Create a widget for the right side of the page
+        right_side_widget = QWidget(self)
+        right_side_widget.setStyleSheet("background-color: lightcoral;")  # Light red background color
+        
+        # Add the right side widget to the grid layout, spanning the last column and all rows
+        grid_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
         # Add the back button
         back_button_layout = QHBoxLayout()
@@ -76,8 +87,6 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
-
 
 
 
