@@ -104,11 +104,18 @@ class Tab1(QWidget):
             if text:
                 label = QLabel(text, self)
                 self.scroll_layout.addWidget(label)
+                # Debug statement to confirm labels are added
+                print(f"Added label with text: {text}")
+        
+        # Ensure that the layout updates and scroll area resizes
+        self.scroll_content.setLayout(self.scroll_layout)
+        self.scroll_area.setWidget(self.scroll_content)
         
         # Clear input fields and reset placeholders
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+
         
     def go_back(self):
         self.main_window.show_main_page()
