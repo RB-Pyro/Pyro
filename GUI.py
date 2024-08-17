@@ -17,24 +17,19 @@ class Tab1(QWidget):
         label_container = QWidget(self)
         label_container.setFixedHeight(50)  # Set the height of the container to 50px
         
-        # Set background color for the label container
-        label_container.setStyleSheet("background-color: lightblue;")
+        # Set a larger font for the labels
+        label_font = QFont()
+        label_font.setPointSize(24)
         
         # Create a grid layout for the labels within the container
         label_grid = QGridLayout(label_container)
-        
-        # Set a larger font for the labels
-        label_font = QFont()
-        label_font.setPointSize(24)  # Set font size (e.g., 24 points)
-        
-        # Define labels and their texts
         labels = ["Name", "Channel", "Cue", "Time"]
         for i, label_text in enumerate(labels):
             label = QLabel(label_text, self)
             label.setFont(label_font)
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("background-color: lightgray;")
-            label_grid.addWidget(label, 0, i)  # Row 0, Column i
+            label_grid.addWidget(label, 0, i)
         
         # Create a widget for the input fields with a background color
         input_container = QWidget(self)
@@ -45,9 +40,9 @@ class Tab1(QWidget):
         for i in range(len(labels)):
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {labels[i]}")
-            input_field.setFixedHeight(40)  # Set the height of the input fields to 40px
+            input_field.setFixedHeight(40)
             input_field.setStyleSheet("background-color: white; color: black; padding: 5px;")
-            input_grid.addWidget(input_field, 0, i)  # Row 0, Column i
+            input_grid.addWidget(input_field, 0, i)
         
         # Add the label container to the first row of the main grid layout
         main_layout.addWidget(label_container, 0, 0, 1, len(labels))
@@ -57,23 +52,16 @@ class Tab1(QWidget):
         
         # Create a scrollable area below the input fields
         scroll_area = QScrollArea(self)
-        scroll_area.setWidgetResizable(True)
-        
-        # Create a widget to hold the scrollable content
-        scroll_content = QWidget(scroll_area)
-        scroll_area.setWidget(scroll_content)
-        
-        # Create a layout for the scrollable content
+        scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
+        scroll_content = QWidget()
+        scroll_content.setStyleSheet("background-color: lightyellow;")
         scroll_layout = QVBoxLayout(scroll_content)
         
-        # Add any content you need inside the scrollable area
-        for i in range(10):  # Example: Adding 10 labels
-            content_label = QLabel(f"Scrollable Content {i+1}", self)
-            content_label.setStyleSheet("background-color: #444444; color: white; padding: 10px;")
-            scroll_layout.addWidget(content_label)
+        # Placeholder content could be added here in the future
+        scroll_area.setWidget(scroll_content)
         
-        # Add the scroll area to the main layout below the input container
-        main_layout.addWidget(scroll_area, 2, 0, 1, len(labels))
+        # Add the scrollable area to the main layout
+        main_layout.addWidget(scroll_area, 2, 0, 1, len(labels))  # Span across all columns below input fields
         
         # Create a widget for the right side of the page
         right_side_widget = QWidget(self)
@@ -88,27 +76,23 @@ class Tab1(QWidget):
             button = QPushButton(text, self)
             right_side_grid.addWidget(button, i, 0)
         
-        # Add the right side widget to the grid layout, spanning the last column and all rows
-        main_layout.addWidget(right_side_widget, 0, len(labels), 3, 1)  # Adjusted to span 3 rows
+        main_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Spanning all rows on the right
         
         # Add another widget below the red one on the left
         left_side_widget = QWidget(self)
         left_side_widget.setStyleSheet("background-color: lightgreen;")
-        
-        # Add the left side widget to the grid layout, below the red widget
-        main_layout.addWidget(left_side_widget, 3, len(labels), 2, 1)  # Adjusted row index
+        main_layout.addWidget(left_side_widget, 2, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
         # Adjust the back button placement
         back_button = QPushButton('Back to Main', self)
         back_button.setFixedHeight(50)
         back_button.clicked.connect(self.go_back)
-        main_layout.addWidget(back_button, 5, 0, 1, len(labels) + 1)  # Moved to the row after the new widget
+        main_layout.addWidget(back_button, 4, 0, 1, len(labels) + 1)
 
         self.setLayout(main_layout)
 
     def go_back(self):
         self.main_window.show_main_page()
-
 
 
 
