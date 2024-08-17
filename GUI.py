@@ -118,43 +118,30 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Create a new horizontal layout
-        horizontal_layout = QHBoxLayout()
+        # Clear all widgets from the existing scroll_layout
+        for i in reversed(range(self.scroll_layout.count())):
+            widget = self.scroll_layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
 
-        # Add text from input fields to the horizontal layout
+        # Add text from input fields to the scroll layout
         for input_field in self.input_fields:
             text = input_field.text()
             if text:
                 label = QLabel(text, self)
                 label.setStyleSheet("border: 1px solid black; padding: 5px;")  # Optional: Add border and padding for visibility
-                horizontal_layout.addWidget(label)
+                self.scroll_layout.addWidget(label)
                 # Debug statement to confirm labels are added
                 print(f"Added label with text: {text}")
-
-        # Clear previous layout from scroll_content if it exists
-        old_layout = self.scroll_content.layout()
-        if old_layout:
-            # Remove all widgets from the previous layout
-            while old_layout.count():
-                item = old_layout.takeAt(0)
-                if item.widget():
-                    item.widget().deleteLater()
-            # Remove the previous layout from scroll_content
-            self.scroll_content.setLayout(None)
-
-        # Set the new horizontal layout to the scroll_content widget
-        self.scroll_content.setLayout(horizontal_layout)
-        
-        # Ensure the scroll area updates to show the new content
-        self.scroll_area.setWidget(self.scroll_content)
 
         # Clear input fields and reset placeholders
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
-    def go_back(self):
-        self.main_window.show_main_page()
+
+        def go_back(self):
+            self.main_window.show_main_page()
 
 
 
