@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -12,13 +13,10 @@ class Tab1(QWidget):
         
         layout = QVBoxLayout(self)
         
-        # Create a QWidget for the label and input field grids
-        grid_widget = QWidget(self)
-        grid_layout = QVBoxLayout(grid_widget)
+        # Create a grid layout for the labels and input fields
+        grid_layout = QGridLayout()
         
-        # Create a QWidget for the label grid with fixed height
-        label_widget = QWidget(self)
-        label_grid = QGridLayout(label_widget)
+        # Set a larger font for the labels
         label_font = QFont()
         label_font.setPointSize(12)  # Set font size (e.g., 12 points)
         
@@ -29,24 +27,18 @@ class Tab1(QWidget):
             label.setFont(label_font)
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("background-color: lightgray; padding: 5px;")
-            label_grid.addWidget(label, 0, i)  # Add labels to the grid layout
+            # Add labels to the first row of the grid layout
+            grid_layout.addWidget(label, 0, i)  # Row 0, Column i
         
-        # Set fixed height for the label widget
-        label_widget.setFixedHeight(100)
-        
-        # Create a grid layout for the input fields
-        input_grid = QGridLayout()
+        # Create input fields
         for i in range(len(labels)):
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {labels[i]}")
-            input_grid.addWidget(input_field, 0, i)  # Add input fields to the grid layout
+            # Add input fields to the second row of the grid layout
+            grid_layout.addWidget(input_field, 1, i)  # Row 1, Column i
         
-        # Add the label widget and input grid to the main grid layout
-        grid_layout.addWidget(label_widget)
-        grid_layout.addLayout(input_grid)
-        
-        # Add the grid_widget to the main layout
-        layout.addWidget(grid_widget)
+        # Add the grid layout to the main layout
+        layout.addLayout(grid_layout)
         
         # Add the back button
         back_button_layout = QHBoxLayout()
@@ -61,6 +53,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
