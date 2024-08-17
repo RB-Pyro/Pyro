@@ -119,19 +119,15 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Clear previous layout from scroll_content if it exists
-        old_layout = self.scroll_content.layout()
-        if old_layout:
-            # Remove all widgets from the previous layout
-            while old_layout.count():
-                item = old_layout.takeAt(0)
+        # Clear previous widgets from the scroll_content if they exist
+        if self.scroll_content.layout():
+            while self.scroll_content.layout().count():
+                item = self.scroll_content.layout().takeAt(0)
                 if item.widget():
                     item.widget().deleteLater()
-            # Remove the previous layout from scroll_content
-            self.scroll_content.setLayout(None)
         
-        # Create a new grid layout for the scroll_content
-        horizontal_layout = QGridLayout(self.scroll_content)
+        # Create a new horizontal layout for the scroll_content
+        horizontal_layout = QGridLayout()
         
         # Add text from input fields to the horizontal layout
         for col, input_field in enumerate(self.input_fields):
@@ -142,7 +138,7 @@ class Tab1(QWidget):
                 horizontal_layout.addWidget(label, 0, col)
                 # Debug statement to confirm labels are added
                 print(f"Added label with text: {text}")
-        
+
         # Set the new horizontal layout to the scroll_content widget
         self.scroll_content.setLayout(horizontal_layout)
         
@@ -153,6 +149,7 @@ class Tab1(QWidget):
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+
 
     def go_back(self):
         self.main_window.show_main_page()
