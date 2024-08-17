@@ -131,8 +131,18 @@ class Tab1(QWidget):
                 horizontal_layout.addWidget(label)
                 # Debug statement to confirm labels are added
                 print(f"Added label with text: {text}")
-        
-        # Add the horizontal layout to the scroll content widget
+
+        # Clear previous layout from scroll_content if it exists
+        if self.scroll_content.layout():
+            # Remove all widgets from the previous layout
+            for i in reversed(range(self.scroll_content.layout().count())):
+                widget = self.scroll_content.layout().itemAt(i).widget()
+                if widget:
+                    widget.deleteLater()
+            # Remove the previous layout from scroll_content
+            self.scroll_content.layout().setParent(None)
+
+        # Set the new horizontal layout to the scroll_content widget
         self.scroll_content.setLayout(horizontal_layout)
         
         # Ensure the scroll area updates to show the new content
@@ -142,6 +152,8 @@ class Tab1(QWidget):
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+
+
 
 
     def go_back(self):
