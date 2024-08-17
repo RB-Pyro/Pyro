@@ -32,36 +32,35 @@ class Tab1(QWidget):
             label_grid.addWidget(label, 0, i)
         
         # Create a widget for the input fields with a background color
-        input_container = QWidget(self)
-        input_container.setStyleSheet("background-color: #222222;")
+        self.input_container = QWidget(self)
+        self.input_container.setStyleSheet("background-color: #222222;")
         
         # Create a grid layout for the input fields
-        input_grid = QGridLayout(input_container)
+        self.input_grid = QGridLayout(self.input_container)
+        self.input_fields = []
         for i in range(len(labels)):
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {labels[i]}")
             input_field.setFixedHeight(40)
             input_field.setStyleSheet("background-color: white; color: black; padding: 5px;")
-            input_grid.addWidget(input_field, 0, i)
+            self.input_fields.append(input_field)
+            self.input_grid.addWidget(input_field, 0, i)
         
         # Add the label container to the first row of the main grid layout
         main_layout.addWidget(label_container, 0, 0, 1, len(labels))
         
         # Add the input container to the second row of the main grid layout
-        main_layout.addWidget(input_container, 1, 0, 1, len(labels))
+        main_layout.addWidget(self.input_container, 1, 0, 1, len(labels))
         
         # Create a scrollable area below the input fields
-        scroll_area = QScrollArea(self)
-        scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
-        scroll_content = QWidget()
-        scroll_content.setStyleSheet("background-color: lightyellow;")
-        scroll_layout = QVBoxLayout(scroll_content)
-        
-        # Placeholder content could be added here in the future
-        scroll_area.setWidget(scroll_content)
+        self.scroll_area = QScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
+        self.scroll_content = QWidget()
+        self.scroll_content.setStyleSheet("background-color: lightyellow;")
+        self.scroll_layout = QVBoxLayout(self.scroll_content)
         
         # Add the scrollable area to the main layout
-        main_layout.addWidget(scroll_area, 2, 0, 1, len(labels))  # Span across all columns below input fields
+        main_layout.addWidget(self.scroll_area, 2, 0, 1, len(labels))  # Span across all columns below input fields
         
         # Create a widget for the right side of the page
         right_side_widget = QWidget(self)
@@ -70,11 +69,18 @@ class Tab1(QWidget):
         # Create a grid layout for the right side widget
         right_side_grid = QGridLayout(right_side_widget)
         
-        # Add 5 buttons to the right side grid layout
-        button_texts = [f"Button {i+1}" for i in range(3)]
-        for i, text in enumerate(button_texts):
-            button = QPushButton(text, self)
-            right_side_grid.addWidget(button, i, 0)
+        # Add 3 buttons to the right side grid layout manually
+        button1 = QPushButton("Button 1", self)
+        button2 = QPushButton("Button 2", self)
+        button3 = QPushButton("Button 3", self)
+        
+        # Connect Button 1 to a method that handles input data
+        button1.clicked.connect(self.handle_button1_click)
+        
+        # Add buttons to the grid layout
+        right_side_grid.addWidget(button1, 0, 0)
+        right_side_grid.addWidget(button2, 1, 0)
+        right_side_grid.addWidget(button3, 2, 0)
         
         main_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Spanning all rows on the right
         
@@ -91,8 +97,22 @@ class Tab1(QWidget):
 
         self.setLayout(main_layout)
 
+    def handle_button1_click(self):
+        # Add text from input fields to the scrollable area
+        for input_field in self.input_fields:
+            text = input_field.text()
+            if text:
+                label = QLabel(text, self)
+                self.scroll_layout.addWidget(label)
+        
+        # Clear input fields and reset placeholders
+        for input_field in self.input_fields:
+            input_field.clear()
+            input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+        
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
