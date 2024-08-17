@@ -5,23 +5,14 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit, QGridLayout
-from PyQt5.QtGui import QPalette, QColor, QFont
-from PyQt5.QtCore import Qt
-
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QLineEdit, QGridLayout
-from PyQt5.QtGui import QPalette, QColor, QFont
-from PyQt5.QtCore import Qt
 
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
         
-        layout = QVBoxLayout(self)
-        
-        # Create a grid layout for the labels, input fields, and the right side widget
-        grid_layout = QGridLayout()
+        # Use QGridLayout for the main layout
+        main_layout = QGridLayout(self)
         
         # Create a QWidget with fixed height for the labels
         label_container = QWidget(self)
@@ -47,46 +38,42 @@ class Tab1(QWidget):
             # Add labels to the label grid layout
             label_grid.addWidget(label, 0, i)  # Row 0, Column i
         
-        # Add the label container to the first row of the main grid layout
-        grid_layout.addWidget(label_container, 0, 0, 1, len(labels))  # Span across all columns
-        
-        # Create input fields
-        for i in range(len(labels)):
-            input_field = QLineEdit(self)
-            input_field.setPlaceholderText(f"Enter {labels[i]}")
-            # Add input fields to the second row of the grid layout
-            grid_layout.addWidget(input_field, 1, i)  # Row 1, Column i
-        
-        # Create a QWidget for the input fields with a background color
+        # Create a widget for the input fields with a background color
         input_container = QWidget(self)
         input_container.setStyleSheet("background-color: lightgreen;")  # Light green background for row 1
         
-        # Set the layout for the input_container and add it to the grid layout
-        input_container.setLayout(grid_layout)
+        # Create a grid layout for the input fields
+        input_grid = QGridLayout(input_container)
+        for i in range(len(labels)):
+            input_field = QLineEdit(self)
+            input_field.setPlaceholderText(f"Enter {labels[i]}")
+            # Add input fields to the grid layout
+            input_grid.addWidget(input_field, 0, i)  # Row 0, Column i
         
-        # Add the input_container to the main layout
-        layout.addWidget(input_container)
+        # Add the label container to the first row of the main grid layout
+        main_layout.addWidget(label_container, 0, 0, 1, len(labels))  # Span across all columns
+        
+        # Add the input container to the second row of the main grid layout
+        main_layout.addWidget(input_container, 1, 0, 1, len(labels))  # Span across all columns
         
         # Create a widget for the right side of the page
         right_side_widget = QWidget(self)
-        right_side_widget.setStyleSheet("background-color: lightred;")  # Light red background color
+        right_side_widget.setStyleSheet("background-color: lightcoral;")  # Light red background color
         
         # Add the right side widget to the grid layout, spanning the last column and all rows
-        grid_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
+        main_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
         # Add the back button
-        back_button_layout = QHBoxLayout()
-        back_button_layout.addStretch()
         back_button = QPushButton('Back to Main', self)
         back_button.setFixedHeight(50)
         back_button.clicked.connect(self.go_back)
-        back_button_layout.addWidget(back_button)
-        layout.addLayout(back_button_layout)
+        main_layout.addWidget(back_button, 2, 0, 1, len(labels) + 1)  # Span across all columns
 
-        self.setLayout(layout)
+        self.setLayout(main_layout)
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
