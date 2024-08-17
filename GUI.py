@@ -130,7 +130,7 @@ class Tab2(QWidget):
         # Add Arm System button
         self.arm_button = QPushButton('Arm System', self)
         self.arm_button.setFixedSize(250, 100)
-        self.arm_button.setStyleSheet("background-color: #222222; color: black;")
+        self.arm_button.setStyleSheet("background-color: green; color: black;")
         self.arm_button.clicked.connect(self.show_confirmation_dialog)
 
         # Add Unarm System button
