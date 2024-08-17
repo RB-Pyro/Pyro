@@ -69,7 +69,7 @@ class Tab1(QWidget):
         
         # Create a widget for the right side of the page
         right_side_widget = QWidget(self)
-        right_side_widget.setStyleSheet("background-color: lightcoral;")  # Light red background color
+        right_side_widget.setStyleSheet("background-color: lightred;")  # Light red background color
         
         # Add the right side widget to the grid layout, spanning the last column and all rows
         grid_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
