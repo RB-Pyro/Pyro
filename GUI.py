@@ -119,21 +119,30 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Add text from input fields to the scrollable area
+        # Create a horizontal layout to hold the input texts
+        horizontal_layout = QHBoxLayout()
+
+        # Add text from input fields to the horizontal layout
         for input_field in self.input_fields:
             text = input_field.text()
             if text:
-                item = ScrollableItem(text, self)
-                self.scroll_layout.addWidget(item)
+                label = QLabel(text, self)
+                label.setStyleSheet("border: 1px solid black; padding: 5px;")  # Optional: Add border and padding for visibility
+                horizontal_layout.addWidget(label)
+                # Debug statement to confirm labels are added
+                print(f"Added label with text: {text}")
         
-        # Ensure that the layout updates and scroll area resizes
-        self.scroll_content.setLayout(self.scroll_layout)
+        # Add the horizontal layout to the scroll content widget
+        self.scroll_content.setLayout(horizontal_layout)
+        
+        # Ensure the scroll area updates to show the new content
         self.scroll_area.setWidget(self.scroll_content)
-        
+
         # Clear input fields and reset placeholders
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+
 
     def go_back(self):
         self.main_window.show_main_page()
