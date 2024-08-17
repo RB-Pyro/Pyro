@@ -190,7 +190,7 @@ class Tab2(QWidget):
 
 
     def show_confirmation_dialog(self):
-       if self.system_ 
+       if self.system:
         dialog = QDialog(self)
         dialog.setWindowTitle("Confirmation")
         layout = QVBoxLayout(dialog)
