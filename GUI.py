@@ -119,36 +119,29 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Clear previous widgets from the scroll_content if they exist
-        if self.scroll_content.layout():
-            while self.scroll_content.layout().count():
-                item = self.scroll_content.layout().takeAt(0)
-                if item.widget():
-                    item.widget().deleteLater()
-        
-        # Create a new horizontal layout for the scroll_content
-        horizontal_layout = QGridLayout()
-        
+        # Create a new horizontal container widget
+        container = QWidget(self)
+        horizontal_layout = QHBoxLayout(container)
+
         # Add text from input fields to the horizontal layout
-        for col, input_field in enumerate(self.input_fields):
+        for input_field in self.input_fields:
             text = input_field.text()
             if text:
                 label = QLabel(text, self)
                 label.setStyleSheet("border: 1px solid black; padding: 5px;")  # Optional: Add border and padding for visibility
-                horizontal_layout.addWidget(label, 0, col)
+                horizontal_layout.addWidget(label)
                 # Debug statement to confirm labels are added
                 print(f"Added label with text: {text}")
 
-        # Set the new horizontal layout to the scroll_content widget
-        self.scroll_content.setLayout(horizontal_layout)
-        
-        # Ensure the scroll area updates to show the new content
-        self.scroll_area.setWidget(self.scroll_content)
+        # Add the new container to the scroll layout (as a new row in the grid)
+        row_position = self.scroll_layout.rowCount()
+        self.scroll_layout.addWidget(container, row_position, 0)
 
         # Clear input fields and reset placeholders
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+
 
 
     def go_back(self):
