@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -33,20 +34,11 @@ class Tab1(QWidget):
         for label_text in labels:
             vbox = QVBoxLayout()
             
-            # Create a frame to act as a box for the label
-            label_box = QFrame(self)
-            label_box.setFrameShape(QFrame.Box)
-            label_box.setLineWidth(1)
-            label_box.setFixedWidth(50) 
-            
-            label = QLabel(label_text, self)
-            label.setFont(label_font)  # Apply the larger font to the label
-            label.setAlignment(Qt.AlignCenter)  # Center the label horizontally
-            
-            # Add the label to the label box
-            label_box_layout = QVBoxLayout(label_box)
-            label_box_layout.addWidget(label)
-            label_box_layout.setContentsMargins(5, 5, 5, 5)  # Add padding inside the box
+            # Create a QLabel to act as a box for the label
+            label_box = QLabel(label_text, self)
+            label_box.setFont(label_font)  # Apply the larger font to the label
+            label_box.setAlignment(Qt.AlignCenter)  # Center the label horizontally
+            label_box.setStyleSheet("background-color: lightgray; padding: 5px;")  # Style the label as a box
             
             # Add the label box and input field to the vbox
             vbox.addWidget(label_box)
@@ -76,6 +68,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
