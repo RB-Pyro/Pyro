@@ -6,6 +6,10 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QGridLayout
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -60,6 +64,16 @@ class Tab1(QWidget):
         right_side_widget = QWidget(self)
         right_side_widget.setStyleSheet("background-color: lightcoral;")  # Light red background color
         
+        # Create a grid layout for the right side widget
+        right_side_grid = QGridLayout(right_side_widget)
+        
+        # Add 5 buttons to the right side grid layout
+        button_texts = [f"Button {i+1}" for i in range(5)]
+        for i, text in enumerate(button_texts):
+            button = QPushButton(text, self)
+            # Add buttons vertically in column 0
+            right_side_grid.addWidget(button, i, 0)
+        
         # Add the right side widget to the grid layout, spanning the last column and all rows
         main_layout.addWidget(right_side_widget, 0, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
@@ -73,6 +87,7 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
