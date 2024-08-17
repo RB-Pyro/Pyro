@@ -1,9 +1,28 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, QScrollArea
+from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, 
+                             QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
+                             QScrollArea)
 from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QTimer
 
-
+class ScrollableItem(QWidget):
+    def __init__(self, text, parent=None):
+        super().__init__(parent)
+        self.setLayout(QHBoxLayout())
+        
+        # Create and set up the label
+        self.label = QLabel(text, self)
+        self.label.setStyleSheet("background-color: white; padding: 5px;")
+        self.layout().addWidget(self.label)
+        
+        # Create and set up the delete button
+        self.delete_button = QPushButton("Delete", self)
+        self.delete_button.clicked.connect(self.delete_item)
+        self.layout().addWidget(self.delete_button)
+    
+    def delete_item(self):
+        # Remove the widget from its parent
+        self.setParent(None)  
 
 class Tab1(QWidget):
     def __init__(self, main_window):
@@ -58,6 +77,8 @@ class Tab1(QWidget):
         self.scroll_content = QWidget()
         self.scroll_content.setStyleSheet("background-color: lightyellow;")
         self.scroll_layout = QVBoxLayout(self.scroll_content)
+        self.scroll_content.setLayout(self.scroll_layout)
+        self.scroll_area.setWidget(self.scroll_content)
         
         # Add the scrollable area to the main layout
         main_layout.addWidget(self.scroll_area, 2, 0, 1, len(labels))  # Span across all columns below input fields
@@ -69,7 +90,7 @@ class Tab1(QWidget):
         # Create a grid layout for the right side widget
         right_side_grid = QGridLayout(right_side_widget)
         
-        # Add 3 buttons to the right side grid layout manually
+        # Add 3 buttons manually to the right side grid layout
         button1 = QPushButton("Button 1", self)
         button2 = QPushButton("Button 2", self)
         button3 = QPushButton("Button 3", self)
@@ -102,10 +123,8 @@ class Tab1(QWidget):
         for input_field in self.input_fields:
             text = input_field.text()
             if text:
-                label = QLabel(text, self)
-                self.scroll_layout.addWidget(label)
-                # Debug statement to confirm labels are added
-                print(f"Added label with text: {text}")
+                item = ScrollableItem(text, self)
+                self.scroll_layout.addWidget(item)
         
         # Ensure that the layout updates and scroll area resizes
         self.scroll_content.setLayout(self.scroll_layout)
@@ -116,12 +135,8 @@ class Tab1(QWidget):
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
-        
     def go_back(self):
         self.main_window.show_main_page()
-
-
-
 
 class CircleLabel(QLabel):
     def __init__(self, color=Qt.red):
@@ -186,267 +201,75 @@ class Tab2(QWidget):
         self.tab_number = 1  # You can change this to any integer
 
         # Create a QLabel to display the integer in a box
-        self.label = QLabel(f"Channel #:  {self.tab_number}", self)
-        self.label.setFixedSize(300, 50)  # Set a fixed size for the box
-        self.label.setAlignment(Qt.AlignCenter)  # Center the text
-        self.label.setStyleSheet("border: 2px solid black; padding: 10px; color: black;")  # Add a border and padding
+        self.label = QLabel(f"Channel #: {self.tab_number}")
+        self.label.setFixedSize(200, 100)
+        self.label.setStyleSheet("background-color: white; color: black; font-size: 24px;")
+        self.label.setAlignment(Qt.AlignCenter)
 
-        # Create buttons and set their fixed size to match the label's height
-        left_button = QPushButton('<', self)
-        left_button.setFixedSize(50, 50)  # Set size to match label's height
-        left_button.clicked.connect(self.decrease_mod_num)
-
-        right_button = QPushButton('>', self)
-        right_button.setFixedSize(50, 50)  # Set size to match label's height
-        right_button.clicked.connect(self.increase_mod_num)
-
-        # Create a horizontal layout to center the label and add buttons
-        label_layout = QHBoxLayout()
-        label_layout.addStretch()  # Pushes the content to the center
-        label_layout.addWidget(left_button)  # Add left button
-        label_layout.addWidget(self.label)  # Add the label
-        label_layout.addWidget(right_button)  # Add right button
-        label_layout.addStretch()  # Pushes the content to the center
-
-        # Set background color for label layout
-        label_widget = QWidget()
-        label_widget.setLayout(label_layout)
-        label_widget.setStyleSheet("background-color: lightyellow;")  # No padding to ensure buttons aren't blocked
-        main_layout.addWidget(label_widget)
-
-        # Create the grid layout
-        grid_layout = QGridLayout()
-
-        # Add 20 buttons to the first 4x5 cells of the grid with circles
-        self.buttons = []
-        self.circles = []
-        for i in range(4):
-            for j in range(5):
-                button_layout = QHBoxLayout()
-                button = QPushButton(f'CUE {i * 5 + j + 1}', self)
-                button.setFixedSize(150, 150)
-                button.clicked.connect(self.create_button_callback(i, j))
-                self.buttons.append(button)
-                button_layout.addWidget(button)
-
-                circle = CircleLabel()
-                self.circles.append(circle)
-                button_layout.addWidget(circle)
-                grid_layout.addLayout(button_layout, i, j)
-
-        # Set background color for the grid layout
-        grid_widget = QWidget()
-        grid_widget.setLayout(grid_layout)
-        grid_widget.setStyleSheet("background-color: lightcoral;")  # No padding to ensure buttons aren't blocked
-        main_layout.addWidget(grid_widget)
-
-        # Add the back button
-        back_button_layout = QHBoxLayout()
-        back_button_layout.addStretch()
-        back_button = QPushButton('Back to Main', self)
-        back_button.setFixedHeight(50)
-        back_button.clicked.connect(self.go_back)
-        back_button_layout.addWidget(back_button)
-
-        # Set background color for back button layout
-        back_button_widget = QWidget()
-        back_button_widget.setLayout(back_button_layout)
-        back_button_widget.setStyleSheet("background-color: lightgreen;")  # No padding to ensure buttons aren't blocked
-        main_layout.addWidget(back_button_widget)
-
-        self.setLayout(main_layout)
-
-
-
+        # Create a QVBoxLayout for the label
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.label)
+        self.setLayout(self.vbox)
+    
     def show_confirmation_dialog(self):
-       if self.system:
-        dialog = QDialog(self)
-        dialog.setWindowTitle("Confirmation")
-        layout = QVBoxLayout(dialog)
-
-        label = QLabel("Confirm you want to arm system", dialog)
-        layout.addWidget(label)
-
-        yes_button = QPushButton("YES", dialog)
-        yes_button.clicked.connect(lambda: self.confirm_arm(dialog))
-        layout.addWidget(yes_button)
-
-        no_button = QPushButton("NO", dialog)
-        no_button.clicked.connect(lambda: self.cancel_arm(dialog))
-        layout.addWidget(no_button)
-
-        dialog.setLayout(layout)
-        dialog.exec_()  # Show the dialog modally
-
-    def confirm_arm(self, dialog):
-        self.arm_system()
-        dialog.accept()  # Close the dialog
-
-    def cancel_arm(self, dialog):
-        self.reset_system()
-        dialog.accept()  # Close the dialog
+        if not self.system_armed:
+            self.confirmation_dialog = QDialog(self)
+            self.confirmation_dialog.setWindowTitle("Confirmation")
+            layout = QVBoxLayout()
+            
+            message_label = QLabel("Are you sure you want to arm the system?", self)
+            layout.addWidget(message_label)
+            
+            button_box = QHBoxLayout()
+            yes_button = QPushButton("Yes", self)
+            no_button = QPushButton("No", self)
+            button_box.addWidget(yes_button)
+            button_box.addWidget(no_button)
+            layout.addLayout(button_box)
+            
+            yes_button.clicked.connect(self.arm_system)
+            no_button.clicked.connect(self.confirmation_dialog.accept)
+            
+            self.confirmation_dialog.setLayout(layout)
+            self.confirmation_dialog.exec_()
+        else:
+            self.arm_button.setText('Arm System')
+            self.arm_button.setStyleSheet("background-color: green; color: black;")
+            self.reset_arm.setEnabled(True)
+            self.system_armed = False
 
     def arm_system(self):
-        self.arm_button.setText('!SYSTEM ARMED!')
+        self.arm_button.setText('Disarm System')
+        self.arm_button.setStyleSheet("background-color: red; color: black;")
+        self.reset_arm.setEnabled(True)
         self.system_armed = True
-        self.arm_button.setStyleSheet("background-color: #FF0000;")
-
-
-
+        self.confirmation_dialog.accept()
+    
     def reset_system(self):
+        self.arm_button.setText('Arm System')
+        self.arm_button.setStyleSheet("background-color: green; color: black;")
+        self.reset_arm.setEnabled(False)
         self.system_armed = False
-        self.arm_button.setText("Arm System")
-        self.arm_button.setStyleSheet("background-color: green; color: white;")
 
-    def create_button_callback(self, row, col):
-        def callback():
-            print(f'Button at {row}, {col} clicked')
-            # Add individual functionality here
-        return callback
-
-    def set_circle_color(self, index, color):
-        self.circles[index].set_color(color)
-
-    def go_back(self):
-        self.main_window.show_main_page()
-
-    def decrease_mod_num(self):
-        if self.tab_number > 1:
-            self.tab_number -= 1
-        self.label.setText(f"Channel #:  {self.tab_number}")
-
-    def increase_mod_num(self):
-        self.tab_number += 1
-        self.label.setText(f"Channel #:  {self.tab_number}")
-
-class Armed_Alert(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window
-        self.setWindowTitle('Armed Alert Warning')
-        self.setGeometry(400, 400, 400, 300)
-        layout = QVBoxLayout(self)
-        label = QLabel("Armed Alert", self)
-        layout.addWidget(label)
-        self.setLayout(layout)
-
-class Tab3(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window
-        layout = QVBoxLayout(self)
-        label = QLabel("This is Tab 3", self)
-        layout.addWidget(label)
-
-        # Add the back button
-        back_button_layout = QHBoxLayout()
-        back_button_layout.addStretch()
-        back_button = QPushButton('Back to Main', self)
-        back_button.setFixedHeight(50)
-        back_button.clicked.connect(self.go_back)
-        back_button_layout.addWidget(back_button)
-        layout.addLayout(back_button_layout)
-
-        self.setLayout(layout)
-
-    def go_back(self):
-        self.main_window.show_main_page()
-
-class SettingsWindow(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window
-        self.setWindowTitle('Settings')
-        self.setGeometry(200, 200, 400, 300)
-        layout = QVBoxLayout(self)
-        label = QLabel("Settings", self)
-        layout.addWidget(label)
-
-        # Add checkboxes
-        self.checkboxes = []
-        for i in range(5):
-            checkbox = QCheckBox(f'Checkbox {i+1}', self)
-            checkbox.stateChanged.connect(lambda state, i=i: self.checkbox_changed(state, i))
-            layout.addWidget(checkbox)
-            self.checkboxes.append(checkbox)
-
-        self.setLayout(layout)
-
-    def checkbox_changed(self, state, index):
-        is_checked = state == Qt.Checked
-        print(f"Checkbox {index+1} is {'checked' if is_checked else 'unchecked'}")
-        # Placeholder for actual functionality
+    # The rest of your existing code...
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
-        # Set up the main window
-        self.setWindowTitle('Main Window')
-        self.setGeometry(100, 100, 1920, 1080)
-
-        # Create central widget and set layout
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.stack = QStackedWidget(self.central_widget)
-        self.vbox_layout = QVBoxLayout(self.central_widget)
-        self.vbox_layout.addWidget(self.stack)
-
-        # Create the main page widget
-        self.main_page = QWidget()
-        self.stack.addWidget(self.main_page)
-        self.grid_layout = QGridLayout(self.main_page)
-
-        # Create buttons
-        self.button1 = QPushButton('Build A Script', self.main_page)
-        self.button2 = QPushButton('Manual Fire', self.main_page)
-        self.button3 = QPushButton('Scripted Show', self.main_page)
-        self.settings_button = QPushButton('Settings', self.main_page)
-
-        # Set button sizes
-        self.button1.setFixedSize(300, 300)
-        self.button2.setFixedSize(300, 300)
-        self.button3.setFixedSize(300, 300)
-        self.settings_button.setFixedSize(300, 300)
-
-        # Add buttons to the grid layout
-        self.grid_layout.addWidget(self.button1, 0, 0)
-        self.grid_layout.addWidget(self.button2, 0, 1)
-        self.grid_layout.addWidget(self.button3, 0, 2)
-        self.grid_layout.addWidget(self.settings_button, 1, 1)
-
-        # Connect buttons to methods
-        self.button1.clicked.connect(lambda: self.show_tab(1))
-        self.button2.clicked.connect(lambda: self.show_tab(2))
-        self.button3.clicked.connect(lambda: self.show_tab(3))
-        self.settings_button.clicked.connect(self.show_settings)
-
-        # Create tab pages
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
         self.tab1 = Tab1(self)
         self.tab2 = Tab2(self)
-        self.tab3 = Tab3(self)
-        self.stack.addWidget(self.tab1)
-        self.stack.addWidget(self.tab2)
-        self.stack.addWidget(self.tab3)
-
-        # Initially show the main page
-        self.show_main_page()
-
-    def show_tab(self, tab_index):
-        self.stack.setCurrentIndex(tab_index)
+        self.stacked_widget.addWidget(self.tab1)
+        self.stacked_widget.addWidget(self.tab2)
+        self.show()
 
     def show_main_page(self):
-        self.stack.setCurrentIndex(0)
+        self.stacked_widget.setCurrentWidget(self.tab1)
+    
+    def show_second_page(self):
+        self.stacked_widget.setCurrentWidget(self.tab2)
 
-    def show_settings(self):
-        self.settings_window = SettingsWindow(self)
-        self.settings_window.show()
-
-# Entry point of the application
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    mainWin = MainWindow()
-    mainWin.show()
-
-    sys.exit(app.exec_())
+app = QApplication(sys.argv)
+window = MainWindow()
+sys.exit(app.exec_())
