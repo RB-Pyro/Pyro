@@ -27,34 +27,24 @@ class Tab1(QWidget):
         label_font = QFont()
         label_font.setPointSize(12)  # Set font size (e.g., 12 points)
         
-        # Define fixed width for the label boxes
-        label_box_width = 50
-        
         # Add labels and input fields in a vertical layout within the horizontal layout
         labels = ["Name", "Channel", "Cue", "Time"]
         for label_text in labels:
-            # Create a vertical layout for each label-input pair
             vbox = QVBoxLayout()
             
-            # Create a QLabel for the label
-            label = QLabel(label_text, self)
-            label.setFont(label_font)  # Apply the larger font to the label
-            label.setAlignment(Qt.AlignCenter)  # Center the label horizontally
+            # Create a QLabel to act as a box for the label
+            label_box = QLabel(label_text, self)
+            label_box.setFont(label_font)  # Apply the larger font to the label
+            label_box.setAlignment(Qt.AlignCenter)  # Center the label horizontally
+            label_box.setStyleSheet("background-color: lightgray; padding: 5px;")  # Style the label as a box
             
-            # Create a QWidget to act as a container for the label and set fixed width
-            label_container = QWidget(self)
-            label_container.setFixedWidth(label_box_width)
-            label_container_layout = QVBoxLayout(label_container)
-            label_container_layout.addWidget(label)
-            label_container_layout.setContentsMargins(0, 0, 0, 0)  # Remove padding inside the container
-            
-            # Add the label container and input field to the vertical layout
-            vbox.addWidget(label_container)
+            # Add the label box and input field to the vbox
+            vbox.addWidget(label_box)
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {label_text}")
             vbox.addWidget(input_field)
             
-            # Add the vertical layout to the horizontal layout
+            # Add the vbox to the horizontal layout
             input_layout.addLayout(vbox)
         
         # Set the layout of the input_row_widget
@@ -76,12 +66,6 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
-
-
-
-
-
 
 
 class CircleLabel(QLabel):
