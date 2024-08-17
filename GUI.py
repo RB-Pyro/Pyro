@@ -29,9 +29,6 @@ class Tab1(QWidget):
         super().__init__()
         self.main_window = main_window
         
-        # Ensure no existing layout is present
-        self.clear_existing_layout()
-
         # Use QGridLayout for the main layout
         main_layout = QGridLayout(self)
         
@@ -78,7 +75,7 @@ class Tab1(QWidget):
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
         self.scroll_content = QWidget()
-        self.scroll_layout = QHBoxLayout(self.scroll_content)  # Use QHBoxLayout to arrange items horizontally
+        self.scroll_layout = QVBoxLayout(self.scroll_content)
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll_area.setWidget(self.scroll_content)
         
@@ -113,18 +110,12 @@ class Tab1(QWidget):
         main_layout.addWidget(left_side_widget, 2, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
         # Adjust the back button placement
-        back_button = QPushButton('Back to Main', self)
-        back_button.setFixedHeight(50)
-        back_button.clicked.connect(self.go_back)
-        main_layout.addWidget(back_button, 4, 0, 1, len(labels) + 1)
+        self.back_button = QPushButton('Back to Main', self)
+        self.back_button.setFixedHeight(50)
+        self.back_button.clicked.connect(self.go_back)
+        main_layout.addWidget(self.back_button, 4, 0, 1, len(labels) + 1)
 
         self.setLayout(main_layout)
-
-    def clear_existing_layout(self):
-        # Remove and delete all child widgets and layouts
-        for child in self.findChildren(QWidget):
-            child.setParent(None)  # Remove the child from its parent
-            child.deleteLater()   # Schedule the child for deletion
 
     def handle_button1_click(self):
         # Create a new horizontal layout
@@ -161,6 +152,10 @@ class Tab1(QWidget):
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
+
+    def go_back(self):
+        self.main_window.show_main_page()
+
 
 
 class CircleLabel(QLabel):
