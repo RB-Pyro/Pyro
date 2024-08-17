@@ -75,7 +75,7 @@ class Tab1(QWidget):
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
         self.scroll_content = QWidget()
-        self.scroll_content.setStyleSheet("background-color: lightyellow;")
+        #self.scroll_content.setStyleSheet("background-color: lightyellow;")
         self.scroll_layout = QVBoxLayout(self.scroll_content)
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll_area.setWidget(self.scroll_content)
