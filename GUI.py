@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QDialog, QRadioButton, QCheckBox
-from PyQt5.QtGui import QPainter, QBrush, QColor
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox
+from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette
 from PyQt5.QtCore import Qt, QTimer
 
 
@@ -9,10 +9,37 @@ class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
+        
         layout = QVBoxLayout(self)
+        
+        # Add a label
         label = QLabel("This is Tab 1", self)
         layout.addWidget(label)
-
+        
+        # Create a QWidget to represent the row with input fields
+        input_row_widget = QWidget(self)
+        
+        # Set background color for the row
+        palette = input_row_widget.palette()
+        palette.setColor(QPalette.Background, QColor(220, 220, 220))  # Light gray color
+        input_row_widget.setAutoFillBackground(True)
+        input_row_widget.setPalette(palette)
+        
+        # Create a horizontal layout for the input fields
+        input_layout = QHBoxLayout(input_row_widget)
+        
+        # Add four input fields to the horizontal layout
+        for i in range(4):
+            input_field = QLineEdit(self)
+            input_field.setPlaceholderText(f"Input {i+1}")
+            input_layout.addWidget(input_field)
+        
+        # Set the layout of the input_row_widget
+        input_row_widget.setLayout(input_layout)
+        
+        # Add the row widget to the main layout
+        layout.addWidget(input_row_widget)
+        
         # Add the back button
         back_button_layout = QHBoxLayout()
         back_button_layout.addStretch()
@@ -163,6 +190,7 @@ class Tab2(QWidget):
 
 
     def show_confirmation_dialog(self):
+       if self.system_ 
         dialog = QDialog(self)
         dialog.setWindowTitle("Confirmation")
         layout = QVBoxLayout(dialog)
