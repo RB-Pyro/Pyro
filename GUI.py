@@ -5,11 +5,6 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 
-
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QGridLayout
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
-
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
