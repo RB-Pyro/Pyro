@@ -40,6 +40,7 @@ class Tab1(QWidget):
         # Create a widget for the input fields with a background color
         input_container = QWidget(self)
         input_container.setStyleSheet("background-color: #222222;")  # Light green background for row 1
+        input_container.setFixedHeight(500)
         
         # Create a grid layout for the input fields
         input_grid = QGridLayout(input_container)
