@@ -12,7 +12,7 @@ class ScrollableItem(QWidget):
         
         # Create and set up the label
         self.label = QLabel(text, self)
-        self.label.setStyleSheet( "padding: 5px;")
+        self.label.setStyleSheet("padding: 5px;")
         self.layout().addWidget(self.label)
         
         # Create and set up the delete button
@@ -29,6 +29,9 @@ class Tab1(QWidget):
         super().__init__()
         self.main_window = main_window
         
+        # Ensure no existing layout is present
+        self.clear_existing_layout()
+
         # Use QGridLayout for the main layout
         main_layout = QGridLayout(self)
         
@@ -75,8 +78,7 @@ class Tab1(QWidget):
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
         self.scroll_content = QWidget()
-        #self.scroll_content.setStyleSheet("background-color: lightyellow;")
-        self.scroll_layout = QVBoxLayout(self.scroll_content)
+        self.scroll_layout = QHBoxLayout(self.scroll_content)  # Use QHBoxLayout to arrange items horizontally
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll_area.setWidget(self.scroll_content)
         
@@ -118,6 +120,12 @@ class Tab1(QWidget):
 
         self.setLayout(main_layout)
 
+    def clear_existing_layout(self):
+        # Remove and delete all child widgets and layouts
+        for child in self.findChildren(QWidget):
+            child.setParent(None)  # Remove the child from its parent
+            child.deleteLater()   # Schedule the child for deletion
+
     def handle_button1_click(self):
         # Create a new horizontal layout
         horizontal_layout = QHBoxLayout()
@@ -153,10 +161,6 @@ class Tab1(QWidget):
         for input_field in self.input_fields:
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
-
-
-
-
 
     def go_back(self):
         self.main_window.show_main_page()
@@ -194,7 +198,6 @@ class Tab2(QWidget):
         self.show_timer.setFixedSize(200, 100)
         self.show_timer.setAlignment(Qt.AlignCenter)
 
-
         # Add Arm System button
         self.arm_button = QPushButton('Arm System', self)
         self.arm_button.setFixedSize(250, 100)
@@ -208,96 +211,82 @@ class Tab2(QWidget):
         self.reset_arm.clicked.connect(self.reset_system)
 
         # Add buttons to the grid layout
-        top_layout.addWidget(self.show_timer,0,0)
-        top_layout.addWidget(self.arm_button, 0, 1)  # Place in row 0, column 0
-        top_layout.addWidget(self.reset_arm, 0, 2)  # Place in row 0, column 1
-        
+        top_layout.addWidget(self.show_timer,0,0,1,2)
+        top_layout.addWidget(self.arm_button, 1, 0)
+        top_layout.addWidget(self.reset_arm, 1, 1)
 
-        # Set background color for top layout
-        top_widget = QWidget()
-        top_widget.setLayout(top_layout)
-        top_widget.setStyleSheet("background-color: lightgray;")  # No padding to ensure buttons aren't blocked
-        main_layout.addWidget(top_widget)
+        # Add top layout to the main layout
+        main_layout.addLayout(top_layout)
+        self.setLayout(main_layout)
 
-        # The rest of your existing code...
-        # Define an integer variable
-        self.tab_number = 1  # You can change this to any integer
-
-        # Create a QLabel to display the integer in a box
-        self.label = QLabel(f"Channel #: {self.tab_number}")
-        self.label.setFixedSize(200, 100)
-        self.label.setStyleSheet("background-color: white; color: black; font-size: 24px;")
-        self.label.setAlignment(Qt.AlignCenter)
-
-        # Create a QVBoxLayout for the label
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.label)
-        self.setLayout(self.vbox)
-    
     def show_confirmation_dialog(self):
-        if not self.system_armed:
-            self.confirmation_dialog = QDialog(self)
-            self.confirmation_dialog.setWindowTitle("Confirmation")
-            layout = QVBoxLayout()
-            
-            message_label = QLabel("Are you sure you want to arm the system?", self)
-            layout.addWidget(message_label)
-            
-            button_box = QHBoxLayout()
-            yes_button = QPushButton("Yes", self)
-            no_button = QPushButton("No", self)
-            button_box.addWidget(yes_button)
-            button_box.addWidget(no_button)
-            layout.addLayout(button_box)
-            
-            yes_button.clicked.connect(self.arm_system)
-            no_button.clicked.connect(self.confirmation_dialog.accept)
-            
-            self.confirmation_dialog.setLayout(layout)
-            self.confirmation_dialog.exec_()
-        else:
-            self.arm_button.setText('Arm System')
-            self.arm_button.setStyleSheet("background-color: green; color: black;")
-            self.reset_arm.setEnabled(True)
-            self.system_armed = False
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Confirmation")
+        dialog.setStyleSheet("background-color: lightgray; color: black;")  # Set a background color for the dialog and text color
+
+        layout = QVBoxLayout(dialog)
+
+        label = QLabel("Are you sure you want to arm the system?", dialog)
+        layout.addWidget(label)
+
+        button_layout = QHBoxLayout()
+        confirm_button = QPushButton("Yes", dialog)
+        cancel_button = QPushButton("No", dialog)
+        button_layout.addWidget(confirm_button)
+        button_layout.addWidget(cancel_button)
+
+        layout.addLayout(button_layout)
+
+        confirm_button.clicked.connect(self.arm_system)
+        cancel_button.clicked.connect(dialog.reject)
+
+        dialog.exec_()
 
     def arm_system(self):
-        self.arm_button.setText('Disarm System')
-        self.arm_button.setStyleSheet("background-color: red; color: black;")
-        self.reset_arm.setEnabled(True)
         self.system_armed = True
-        self.confirmation_dialog.accept()
-    
-    def reset_system(self):
-        self.arm_button.setText('Arm System')
-        self.arm_button.setStyleSheet("background-color: green; color: black;")
-        self.reset_arm.setEnabled(False)
-        self.system_armed = False
+        self.arm_button.setText("System Armed")
+        self.arm_button.setStyleSheet("background-color: red; color: white;")
+        self.show_timer.setText("Show Timer: \n00.00")
+        # Return to main page after arm is pressed
+        self.main_window.show_main_page()
 
-    # The rest of your existing code...
+    def reset_system(self):
+        self.system_armed = False
+        self.arm_button.setText("Arm System")
+        self.arm_button.setStyleSheet("background-color: green; color: black;")
+        self.show_timer.setText("Show Timer: \n00.00")
+        # Return to main page after unarm is pressed
+        self.main_window.show_main_page()
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.stacked_widget = QStackedWidget()
+        self.setWindowTitle("PyQt5 Main Window")
+        self.setGeometry(100, 100, 800, 600)
+
+        # Create a stacked widget for the main and tab widgets
+        self.stacked_widget = QStackedWidget(self)
         self.setCentralWidget(self.stacked_widget)
+
+        # Create instances of tabs
         self.tab1 = Tab1(self)
         self.tab2 = Tab2(self)
+
+        # Add tabs to the stacked widget
         self.stacked_widget.addWidget(self.tab1)
         self.stacked_widget.addWidget(self.tab2)
-        
-        # Set the window to full screen
-        self.showFullScreen()
 
-        self.show()
-
+        # Show the main page initially
+        self.show_main_page()
 
     def show_main_page(self):
         self.stacked_widget.setCurrentWidget(self.tab1)
-    
-    def show_second_page(self):
+
+    def show_tab2(self):
         self.stacked_widget.setCurrentWidget(self.tab2)
 
-app = QApplication(sys.argv)
-window = MainWindow()
-sys.exit(app.exec_())
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
