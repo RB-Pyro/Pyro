@@ -39,14 +39,15 @@ class Tab1(QWidget):
         
         # Create a widget for the input fields with a background color
         input_container = QWidget(self)
-        input_container.setStyleSheet("background-color: #222222;")  # Light green background for row 1
-        
+        input_container.setStyleSheet("background-color: #222222;")  # Dark background for row 1
         
         # Create a grid layout for the input fields
         input_grid = QGridLayout(input_container)
         for i in range(len(labels)):
             input_field = QLineEdit(self)
             input_field.setPlaceholderText(f"Enter {labels[i]}")
+            input_field.setFixedHeight(40)  # Set the height of the input fields to 40px
+            input_field.setStyleSheet("background-color: white; color: black; padding: 5px;")  # Change background and text color
             # Add input fields to the grid layout
             input_grid.addWidget(input_field, 0, i)  # Row 0, Column i
         
@@ -90,11 +91,6 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
-
-
-
-
 
 
 
