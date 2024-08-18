@@ -144,6 +144,7 @@ class Tab1(QWidget):
 
 
 
+
 class CircleLabel(QLabel):
     def __init__(self, color=Qt.red):
         super().__init__()
