@@ -30,6 +30,7 @@ class ScrollableItem(QWidget):
         self.label = QLabel(combined_values, self)
         self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)  # Align text to the left and vertically center
 
         # Add the label to the grid layout, spanning multiple columns
         self.grid_layout.addWidget(self.label, 0, 0, 1, 4)  # Span across 4 columns
@@ -65,6 +66,7 @@ class ScrollableItem(QWidget):
             edit_field = QLineEdit(value, self)
             edit_field.setFixedHeight(40)
             edit_field.setStyleSheet("color: black; padding: 5px;")
+            edit_field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
             self.grid_layout.addWidget(edit_field, 0, idx, 1, 4)  # Span across 4 columns
             self.edit_fields[key] = edit_field
 
@@ -91,6 +93,7 @@ class ScrollableItem(QWidget):
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
+
 
 
 
