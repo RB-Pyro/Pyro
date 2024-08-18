@@ -18,10 +18,12 @@ class ScrollableItem(QWidget):
         
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
+        self.edit_button.setFixedSize(80, 40)
         self.layout().addWidget(self.edit_button)
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
+        self.delete_button.setFixedSize(80, 40)
         self.delete_button.clicked.connect(self.delete_item)
         self.layout().addWidget(self.delete_button)
     
