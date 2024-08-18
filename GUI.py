@@ -12,7 +12,7 @@ class ScrollableItem(QWidget):
 
         # Set the background color to light yellow and add a black border
         self.setStyleSheet("""
-            background-color: lightyellow;
+            background-color: lightblue;
             border: 3px solid black;
         """)
 
