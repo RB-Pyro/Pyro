@@ -12,36 +12,46 @@ class ScrollableItem(QWidget):
 
         # Set the background color to light yellow and add a black border
         self.setStyleSheet("""
-            background-color: lightblue;
+            background-color: lightyellow;
             border: 3px solid black;
         """)
 
         # Create a horizontal box layout for the item
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
-        layout.setSpacing(10)  # Add spacing between widgets
-        self.setLayout(layout)
+        hbox_layout = QHBoxLayout(self)
+        hbox_layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
+        hbox_layout.setSpacing(10)  # Add spacing between widgets
+        self.setLayout(hbox_layout)
+
+        # Create a grid layout within the box layout
+        grid_layout = QGridLayout()
+        hbox_layout.addLayout(grid_layout)
 
         # Create and set up the label
         self.label = QLabel(text, self)
         self.label.setStyleSheet("padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        layout.addWidget(self.label)  # Add label with expanding size policy
+        grid_layout.addWidget(self.label, 0, 0)  # Add label to the first column
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
         self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
-        layout.addWidget(self.edit_button)
+        grid_layout.addWidget(self.edit_button, 0, 1)  # Add edit button to the second column
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
         self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.delete_button.clicked.connect(self.delete_item)
-        layout.addWidget(self.delete_button)
+        grid_layout.addWidget(self.delete_button, 0, 2)  # Add delete button to the third column
+
+        # Make the label span the remaining space
+        grid_layout.setColumnStretch(0, 1)
+        grid_layout.setColumnStretch(1, 0)
+        grid_layout.setColumnStretch(2, 0)
 
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
+
 
 
 
