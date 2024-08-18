@@ -11,6 +11,7 @@ from PyQt5.QtCore import Qt, QTimer
 class ScrollableItem(QWidget):
     def __init__(self, values, parent=None):
         super().__init__(parent)
+        self.values = values
         self.setFixedHeight(50)  # Set the height to 50px
 
         # Set the background color to light blue, text color to black, and add a black border
@@ -21,177 +22,80 @@ class ScrollableItem(QWidget):
         """)
 
         # Create a horizontal box layout for the item
-        hbox_layout = QHBoxLayout(self)
-        hbox_layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
-        hbox_layout.setSpacing(10)  # Add spacing between widgets
+        self.hbox_layout = QHBoxLayout(self)
+        self.hbox_layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
+        self.hbox_layout.setSpacing(10)  # Add spacing between widgets
 
         # Create and set up the label with black text color
-        self.label = QLabel(values, self)
+        self.label = QLabel(self.values, self)
         self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         # Add a spacer to push the label to fill available space
-        hbox_layout.addWidget(self.label)  # Add label to the layout with expansion
+        self.hbox_layout.addWidget(self.label)  # Add label to the layout with expansion
 
         # Create and add a stretchable spacer item before the buttons
         hspacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        hbox_layout.addItem(hspacer)
+        self.hbox_layout.addItem(hspacer)
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
         self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
-        hbox_layout.addWidget(self.edit_button)  # Add edit button to the layout
+        self.edit_button.clicked.connect(self.toggle_edit_save)
+        self.hbox_layout.addWidget(self.edit_button)  # Add edit button to the layout
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
         self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.delete_button.setStyleSheet("background-color: lightcoral;")  # Light red color
         self.delete_button.clicked.connect(self.delete_item)
-        hbox_layout.addWidget(self.delete_button)  # Add delete button to the layout
+        self.hbox_layout.addWidget(self.delete_button)  # Add delete button to the layout
+
+        # Create a dictionary to hold the text fields when in edit mode
+        self.edit_fields = {}
+
+    def toggle_edit_save(self):
+        if self.edit_button.text() == "Edit":
+            self.switch_to_edit_mode()
+        else:
+            self.switch_to_save_mode()
+
+    def switch_to_edit_mode(self):
+        self.edit_button.setText("Save")
+        self.label.hide()  # Hide the label
+
+        # Replace the label with text fields
+        for idx, (key, value) in enumerate(zip(self.values.keys(), self.values.values())):
+            edit_field = QLineEdit(value, self)
+            edit_field.setFixedHeight(40)
+            edit_field.setStyleSheet("color: black; padding: 5px;")
+            self.hbox_layout.insertWidget(idx, edit_field)
+            self.edit_fields[key] = edit_field
+
+    def switch_to_save_mode(self):
+        self.edit_button.setText("Edit")
+        
+        # Update the values in the dictionary
+        for key, edit_field in self.edit_fields.items():
+            self.values[key] = edit_field.text()
+
+        # Update the label with the new combined text
+        combined_values = " | ".join(self.values.values())
+        self.label.setText(combined_values)
+        self.label.show()  # Show the label again
+
+        # Remove the text fields
+        for edit_field in self.edit_fields.values():
+            self.hbox_layout.removeWidget(edit_field)
+            edit_field.deleteLater()
+
+        # Clear the edit fields dictionary
+        self.edit_fields.clear()
 
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
 
-
-
-
-
-class Tab1(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window
-
-        # Define labels at the class level
-        self.labels = ["Name", "Channel", "Cue", "Time"]
-
-        # Initialize the dictionary to store input data
-        self.input_data = {}
-        self.scrollable_data = []  # To store the scrollable area data
-
-        # Use QGridLayout for the main layout
-        main_layout = QGridLayout(self)
-
-        # Create a QWidget with fixed height for the labels
-        label_container = QWidget(self)
-        label_container.setFixedHeight(50)  # Set the height of the container to 50px
-
-        # Set a larger font for the labels
-        label_font = QFont()
-        label_font.setPointSize(24)
-
-        # Create a grid layout for the labels within the container
-        label_grid = QGridLayout(label_container)
-        for i, label_text in enumerate(self.labels):
-            label = QLabel(label_text, self)
-            label.setFont(label_font)
-            label.setAlignment(Qt.AlignCenter)
-            label.setStyleSheet("background-color: lightgray;")
-            label_grid.addWidget(label, 0, i)
-
-        # Create a widget for the input fields with a background color
-        self.input_container = QWidget(self)
-        self.input_container.setStyleSheet("background-color: #222222;")
-        
-        # Create a grid layout for the input fields
-        self.input_grid = QGridLayout(self.input_container)
-        self.input_fields = []
-        for i in range(len(self.labels)):
-            input_field = QLineEdit(self)
-            input_field.setPlaceholderText(f"Enter {self.labels[i]}")
-            input_field.setFixedHeight(40)
-            input_field.setStyleSheet("color: black; padding: 5px;")
-            self.input_fields.append(input_field)
-            self.input_grid.addWidget(input_field, 0, i)
-        
-        # Add the label container to the first row of the main grid layout
-        main_layout.addWidget(label_container, 0, 0, 1, len(self.labels))
-
-        # Add the input container to the second row of the main grid layout
-        main_layout.addWidget(self.input_container, 1, 0, 1, len(self.labels))
-
-        # Create a scrollable area below the input fields
-        self.scroll_area = QScrollArea(self)
-        self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
-        self.scroll_content = QWidget()
-        self.scroll_content.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.scroll_layout = QGridLayout(self.scroll_content)
-        self.scroll_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
-        self.scroll_layout.setSpacing(0)  # Remove spacing
-        self.scroll_content.setLayout(self.scroll_layout)
-        self.scroll_area.setWidget(self.scroll_content)
-
-        # Add the scrollable area to the main layout
-        main_layout.addWidget(self.scroll_area, 2, 0, 1, len(self.labels))  # Span across all columns below input fields
-
-        # Create a widget for the right side of the page
-        right_side_widget = QWidget(self)
-        right_side_widget.setStyleSheet("background-color: lightcoral;")
-        
-        # Create a grid layout for the right side widget
-        right_side_grid = QGridLayout(right_side_widget)
-        
-        # Add 3 buttons manually to the right side grid layout
-        button1 = QPushButton("Button 1", self)
-        button2 = QPushButton("Button 2", self)
-        button3 = QPushButton("Button 3", self)
-        
-        # Connect Button 1 to a method that handles input data
-        button1.clicked.connect(self.handle_button1_click)
-        
-        # Add buttons to the grid layout
-        right_side_grid.addWidget(button1, 0, 0)
-        right_side_grid.addWidget(button2, 1, 0)
-        right_side_grid.addWidget(button3, 2, 0)
-        
-        main_layout.addWidget(right_side_widget, 0, len(self.labels), 2, 1)  # Spanning all rows on the right
-        
-        # Add another widget below the red one on the left
-        left_side_widget = QWidget(self)
-        left_side_widget.setStyleSheet("background-color: lightgreen;")
-        main_layout.addWidget(left_side_widget, 2, len(self.labels), 2, 1)  # Column len(labels), spanning 2 rows
-        
-        # Adjust the back button placement
-        back_button = QPushButton('Back to Main', self)
-        back_button.setFixedHeight(50)
-        back_button.clicked.connect(self.go_back)
-        main_layout.addWidget(back_button, 4, 0, 1, len(self.labels) + 1)
-
-        self.setLayout(main_layout)
-
-    def handle_button1_click(self):
-        # Retrieve text from input fields and store in the dictionary
-        self.input_data = {label: input_field.text() for label, input_field in zip(self.labels, self.input_fields)}
-
-        # Add the data to scrollable_data
-        if any(self.input_data.values()):  # Check if any data is entered
-            self.scrollable_data.append(self.input_data.copy())  # Store a copy of the input data
-
-            # Create a new ScrollableItem with the values from the input fields
-            combined_values = " | ".join(self.input_data.values())
-            item = ScrollableItem(combined_values, self)
-            self.scroll_layout.addWidget(item)
-
-        # Clear input fields and reset placeholders
-        for input_field in self.input_fields:
-            input_field.clear()
-            input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
-
-        # Set focus back to the first input field
-        if self.input_fields:
-            self.input_fields[0].setFocus()
-
-
-    def export_to_csv(self, filename):
-        # Export scrollable_data to a CSV file
-        if self.scrollable_data:
-            with open(filename, 'w', newline='') as file:
-                writer = csv.DictWriter(file, fieldnames=self.labels)
-                writer.writeheader()
-                writer.writerows(self.scrollable_data)
-
-    def go_back(self):
-        self.main_window.show_main_page()
 
 
 
