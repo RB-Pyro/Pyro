@@ -26,7 +26,7 @@ class ScrollableItem(QWidget):
         self.label = QLabel(text, self)
         self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        hbox_layout.addWidget(self.label)  # Add label to the layout with expansion
+        hbox_layout.addWidget(self.label, 1)  # Add label to the layout with expansion
 
         # Add a spacer to push the buttons to the right
         hbox_layout.addStretch()
@@ -45,6 +45,7 @@ class ScrollableItem(QWidget):
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
+
 
 
 
