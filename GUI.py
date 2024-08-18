@@ -1,9 +1,11 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, 
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
-                             QScrollArea, QSizePolicy)
+                             QScrollArea, QSizePolicy,QSpacerItem)
 from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QTimer
+
+
 
 class ScrollableItem(QWidget):
     def __init__(self, text, parent=None):
@@ -26,10 +28,13 @@ class ScrollableItem(QWidget):
         self.label = QLabel(text, self)
         self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        hbox_layout.addWidget(self.label, 1)  # Add label to the layout with expansion
 
-        # Add a spacer to push the buttons to the right
-        hbox_layout.addStretch()
+        # Add a spacer to push the label to fill available space
+        hbox_layout.addWidget(self.label)  # Add label to the layout with expansion
+
+        # Create and add a stretchable spacer item before the buttons
+        hspacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        hbox_layout.addItem(hspacer)
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
@@ -45,9 +50,6 @@ class ScrollableItem(QWidget):
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
-
-
-
 
 
 
