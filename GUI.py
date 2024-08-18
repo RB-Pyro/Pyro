@@ -9,9 +9,9 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 class ScrollableItem(QWidget):
-    def __init__(self, combined_values, values_dict, parent=None):
+    def __init__(self, values_dict, parent=None):
         super().__init__(parent)
-        self.values_dict = values_dict  # Store the dictionary of values
+        self.values = values_dict
         self.setFixedHeight(50)  # Set the height to 50px
 
         # Set the background color to light blue, text color to black, and add a black border
@@ -21,78 +21,70 @@ class ScrollableItem(QWidget):
             border: 3px solid black;
         """)
 
-        # Create a grid layout for the item
-        self.grid_layout = QGridLayout(self)
-        self.grid_layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
-        self.grid_layout.setSpacing(10)  # Add spacing between widgets
+        # Create a horizontal box layout for the item
+        hbox_layout = QHBoxLayout(self)
+        hbox_layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
+        hbox_layout.setSpacing(10)  # Add spacing between widgets
 
-        # Create and set up the label with black text color
-        self.label = QLabel(combined_values, self)
-        self.label.setStyleSheet("color: black; padding: 5px;")
-        self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)  # Align text to the left and vertically center
-
-        # Add the label to the grid layout, spanning multiple columns
-        self.grid_layout.addWidget(self.label, 0, 0, 1, 4)  # Span across 4 columns
+        # Create QLabel widgets for each value in the dictionary and add them to the layout
+        self.labels = []
+        for key, value in self.values.items():
+            label = QLabel(value, self)
+            label.setStyleSheet("color: black; padding: 5px;")
+            label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            hbox_layout.addWidget(label)
+            self.labels.append(label)
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
         self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.edit_button.clicked.connect(self.toggle_edit_save)
-        self.grid_layout.addWidget(self.edit_button, 0, 4)  # Place in the 5th column
+        hbox_layout.addWidget(self.edit_button)  # Add edit button to the layout
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
         self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.delete_button.setStyleSheet("background-color: lightcoral;")  # Light red color
         self.delete_button.clicked.connect(self.delete_item)
-        self.grid_layout.addWidget(self.delete_button, 0, 5)  # Place in the 6th column
+        hbox_layout.addWidget(self.delete_button)  # Add delete button to the layout
 
-        # Create a dictionary to hold the text fields when in edit mode
-        self.edit_fields = {}
+    def delete_item(self):
+        # Remove the widget from its parent
+        self.setParent(None)
 
     def toggle_edit_save(self):
         if self.edit_button.text() == "Edit":
             self.switch_to_edit_mode()
         else:
-            self.switch_to_save_mode()
+            self.save_edits()
 
     def switch_to_edit_mode(self):
+        # Replace labels with line edits
+        self.line_edits = []
+        for label in self.labels:
+            line_edit = QLineEdit(label.text(), self)
+            line_edit.setStyleSheet("color: black; padding: 5px;")
+            line_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            self.layout().replaceWidget(label, line_edit)
+            label.hide()
+            self.line_edits.append(line_edit)
+
         self.edit_button.setText("Save")
-        self.label.hide()  # Hide the label
 
-        # Replace the label with text fields
-        for idx, (key, value) in enumerate(self.values_dict.items()):
-            edit_field = QLineEdit(value, self)
-            edit_field.setFixedHeight(40)
-            edit_field.setStyleSheet("color: black; padding: 5px;")
-            edit_field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            self.grid_layout.addWidget(edit_field, 0, idx, 1, 4)  # Span across 4 columns
-            self.edit_fields[key] = edit_field
+    def save_edits(self):
+        # Save the values from the line edits back into the dictionary
+        for key, line_edit in zip(self.values.keys(), self.line_edits):
+            self.values[key] = line_edit.text()
 
-    def switch_to_save_mode(self):
+        # Replace line edits with updated labels
+        for label, line_edit in zip(self.labels, self.line_edits):
+            label.setText(line_edit.text())
+            self.layout().replaceWidget(line_edit, label)
+            line_edit.hide()
+            label.show()
+
         self.edit_button.setText("Edit")
-        
-        # Update the values in the dictionary
-        for key, edit_field in self.edit_fields.items():
-            self.values_dict[key] = edit_field.text()
 
-        # Update the label with the new combined text
-        combined_values = " | ".join(self.values_dict.values())
-        self.label.setText(combined_values)
-        self.label.show()  # Show the label again
-
-        # Remove the text fields
-        for edit_field in self.edit_fields.values():
-            self.grid_layout.removeWidget(edit_field)
-            edit_field.deleteLater()
-
-        # Clear the edit fields dictionary
-        self.edit_fields.clear()
-
-    def delete_item(self):
-        # Remove the widget from its parent
-        self.setParent(None)
 
 
 
