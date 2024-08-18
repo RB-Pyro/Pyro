@@ -6,19 +6,19 @@ from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QTimer
 
 class ScrollableItem(QWidget):
-    def __init__(self, text, parent=None):
+    def __init__(self, texts, parent=None):
         super().__init__(parent)
-        self.setLayout(QHBoxLayout())
+        self.setFixedHeight(50)  # Set the height of the widget to 50px
         
-        # Create and set up the label
-        self.label = QLabel(text, self)
-        self.label.setStyleSheet("padding: 5px;")
-        self.layout().addWidget(self.label)
+        layout = QGridLayout(self)
         
-        # Create and set up the delete button
-        self.delete_button = QPushButton("Delete", self)
-        self.delete_button.clicked.connect(self.delete_item)
-        self.layout().addWidget(self.delete_button)
+        for i, text in enumerate(texts):
+            label = QLabel(text, self)
+            label.setStyleSheet("border: 1px solid black; padding: 5px;")
+            layout.addWidget(label, 0, i)
+        
+        self.setLayout(layout)
+
     
     def delete_item(self):
         # Remove the widget from its parent
@@ -119,28 +119,18 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Create a new horizontal container widget
-        container = QWidget(self)
-        horizontal_layout = QHBoxLayout(container)
+        texts = [input_field.text() for input_field in self.input_fields]
+        
+        if any(texts):
+            item = ScrollableItem(texts)
+            self.scroll_layout.addWidget(item)
+            self.scroll_layout.setAlignment(item, Qt.AlignTop)
+            
+            # Clear input fields and reset placeholders
+            for input_field in self.input_fields:
+                input_field.clear()
+                input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
-        # Add text from input fields to the horizontal layout
-        for input_field in self.input_fields:
-            text = input_field.text()
-            if text:
-                label = QLabel(text, self)
-                label.setStyleSheet("border: 1px solid black; padding: 5px;")  # Optional: Add border and padding for visibility
-                horizontal_layout.addWidget(label)
-                # Debug statement to confirm labels are added
-                print(f"Added label with text: {text}")
-
-        # Add the new container to the scroll layout (as a new row in the grid)
-        row_position = self.scroll_layout.rowCount()
-        self.scroll_layout.addWidget(container, row_position, 0)
-
-        # Clear input fields and reset placeholders
-        for input_field in self.input_fields:
-            input_field.clear()
-            input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
 
 
