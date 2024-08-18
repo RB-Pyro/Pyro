@@ -9,9 +9,9 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 class ScrollableItem(QWidget):
-    def __init__(self, values, parent=None):
+    def __init__(self, combined_values, values_dict, parent=None):
         super().__init__(parent)
-        self.values = values
+        self.values_dict = values_dict  # Store the dictionary of values
         self.setFixedHeight(50)  # Set the height to 50px
 
         # Set the background color to light blue, text color to black, and add a black border
@@ -27,7 +27,7 @@ class ScrollableItem(QWidget):
         self.hbox_layout.setSpacing(10)  # Add spacing between widgets
 
         # Create and set up the label with black text color
-        self.label = QLabel(self.values, self)
+        self.label = QLabel(combined_values, self)
         self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
@@ -65,7 +65,7 @@ class ScrollableItem(QWidget):
         self.label.hide()  # Hide the label
 
         # Replace the label with text fields
-        for idx, (key, value) in enumerate(zip(self.values.keys(), self.values.values())):
+        for idx, (key, value) in enumerate(self.values_dict.items()):
             edit_field = QLineEdit(value, self)
             edit_field.setFixedHeight(40)
             edit_field.setStyleSheet("color: black; padding: 5px;")
@@ -77,10 +77,10 @@ class ScrollableItem(QWidget):
         
         # Update the values in the dictionary
         for key, edit_field in self.edit_fields.items():
-            self.values[key] = edit_field.text()
+            self.values_dict[key] = edit_field.text()
 
         # Update the label with the new combined text
-        combined_values = " | ".join(self.values.values())
+        combined_values = " | ".join(self.values_dict.values())
         self.label.setText(combined_values)
         self.label.show()  # Show the label again
 
@@ -95,6 +95,7 @@ class ScrollableItem(QWidget):
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
+
 
 
 class Tab1(QWidget):
@@ -207,9 +208,9 @@ class Tab1(QWidget):
         if any(self.input_data.values()):  # Check if any data is entered
             self.scrollable_data.append(self.input_data.copy())  # Store a copy of the input data
 
-            # Create a new ScrollableItem with the values from the input fields
+            # Create a new ScrollableItem with the combined string and the input_data dictionary
             combined_values = " | ".join(self.input_data.values())
-            item = ScrollableItem(combined_values, self)
+            item = ScrollableItem(combined_values, self.input_data.copy(), self)
             self.scroll_layout.addWidget(item)
 
         # Clear input fields and reset placeholders
@@ -220,6 +221,7 @@ class Tab1(QWidget):
         # Set focus back to the first input field
         if self.input_fields:
             self.input_fields[0].setFocus()
+
 
 
     def export_to_csv(self, filename):
