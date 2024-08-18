@@ -32,10 +32,6 @@ class ScrollableItem(QWidget):
         # Add a spacer to push the label to fill available space
         hbox_layout.addWidget(self.label)  # Add label to the layout with expansion
 
-        # Create and add a stretchable spacer item before the buttons
-        hspacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        hbox_layout.addItem(hspacer)
-
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
         self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
@@ -44,12 +40,16 @@ class ScrollableItem(QWidget):
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
         self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
+        self.delete_button.setStyleSheet("background-color: lightcoral; color: black;")  # Light red color
         self.delete_button.clicked.connect(self.delete_item)
         hbox_layout.addWidget(self.delete_button)  # Add delete button to the layout
 
     def delete_item(self):
-        # Remove the widget from its parent
-        self.setParent(None)
+        # Remove this widget from its parent widget
+        if self.parentWidget():
+            self.setParent(None)
+            self.deleteLater()  # Ensure the widget is properly deleted from memory
+
 
 
 
