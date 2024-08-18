@@ -10,9 +10,9 @@ class ScrollableItem(QWidget):
         super().__init__(parent)
         self.setFixedHeight(50)  # Set the height to 50px
 
-        # Set the background color to light yellow and add a black border
+        # Set the background color to light blue, text color to black, and add a black border
         self.setStyleSheet("""
-            background-color: lightyellow;
+            background-color: lightblue;
             border: 3px solid black;
         """)
 
@@ -26,9 +26,9 @@ class ScrollableItem(QWidget):
         grid_layout = QGridLayout()
         hbox_layout.addLayout(grid_layout)
 
-        # Create and set up the label
+        # Create and set up the label with black text color
         self.label = QLabel(text, self)
-        self.label.setStyleSheet("padding: 5px;")
+        self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         grid_layout.addWidget(self.label, 0, 0)  # Add label to the first column
 
@@ -51,8 +51,6 @@ class ScrollableItem(QWidget):
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
-
-
 
 
 
