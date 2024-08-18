@@ -14,19 +14,19 @@ class ScrollableItem(QWidget):
         # Create and set up the label
         self.label = QLabel(text, self)
         self.label.setStyleSheet("padding: 5px;")
-        self.layout().addWidget(self.label)
+        self.layout().addWidget(self.label, 1)  # Stretch factor of 1 for label to occupy space
         
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
-        self.edit_button.setFixedSize(80, 40)
+        self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.layout().addWidget(self.edit_button)
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
-        self.delete_button.setFixedSize(80, 40)
+        self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.delete_button.clicked.connect(self.delete_item)
         self.layout().addWidget(self.delete_button)
-    
+
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
@@ -141,9 +141,6 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
-
-
 
 
 
