@@ -50,6 +50,7 @@ class ScrollableItem(QWidget):
 
 
 
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
