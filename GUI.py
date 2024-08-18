@@ -17,32 +17,30 @@ class ScrollableItem(QWidget):
             border: 3px solid black;
         """)
 
-        # Create a grid layout for the widget
-        grid_layout = QGridLayout(self)
-        grid_layout.setContentsMargins(5, 5, 5, 5)
-        grid_layout.setSpacing(10)
+        # Create a horizontal box layout for the item
+        hbox_layout = QHBoxLayout(self)
+        hbox_layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
+        hbox_layout.setSpacing(10)  # Add spacing between widgets
 
         # Create and set up the label with black text color
         self.label = QLabel(text, self)
-        self.label.setStyleSheet("padding: 5px;")
+        self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        grid_layout.addWidget(self.label, 0, 0)  # Add label to the first column
+        hbox_layout.addWidget(self.label)  # Add label to the layout with expansion
+
+        # Add a spacer to push the buttons to the right
+        hbox_layout.addStretch()
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
         self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
-        grid_layout.addWidget(self.edit_button, 0, 1, Qt.AlignRight)  # Add edit button to the second column, aligned right
+        hbox_layout.addWidget(self.edit_button)  # Add edit button to the layout
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
         self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.delete_button.clicked.connect(self.delete_item)
-        grid_layout.addWidget(self.delete_button, 0, 2, Qt.AlignRight)  # Add delete button to the third column, aligned right
-
-        # Make the label span the remaining space
-        grid_layout.setColumnStretch(0, 1)
-        grid_layout.setColumnStretch(1, 0)
-        grid_layout.setColumnStretch(2, 0)
+        hbox_layout.addWidget(self.delete_button)  # Add delete button to the layout
 
     def delete_item(self):
         # Remove the widget from its parent
