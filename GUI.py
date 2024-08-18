@@ -10,8 +10,8 @@ class ScrollableItem(QWidget):
         super().__init__(parent)
         self.setFixedHeight(50)  # Set the height to 50px
 
-        # Create a horizontal box layout for the item
-        layout = QHBoxLayout(self)
+        # Create a grid layout for the item
+        layout = QGridLayout(self)
         layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
         layout.setSpacing(10)  # Add spacing between widgets
 
@@ -19,25 +19,26 @@ class ScrollableItem(QWidget):
         self.label = QLabel(text, self)
         self.label.setStyleSheet("padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        layout.addWidget(self.label)  # Add label with expanding size policy
+        layout.addWidget(self.label, 0, 0, 1, 2)  # Span label across two columns
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
         self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
-        layout.addWidget(self.edit_button)
+        layout.addWidget(self.edit_button, 0, 2)  # Place edit button in the third column
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
         self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
         self.delete_button.clicked.connect(self.delete_item)
-        layout.addWidget(self.delete_button)
+        layout.addWidget(self.delete_button, 0, 3)  # Place delete button in the fourth column
 
-        layout.addStretch()  # Ensure the layout expands
+        # Set layout for the widget
         self.setLayout(layout)
 
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
+
 
 
 
@@ -49,52 +50,14 @@ class Tab1(QWidget):
         # Use QGridLayout for the main layout
         main_layout = QGridLayout(self)
 
-        # Create a QWidget with fixed height for the labels
-        label_container = QWidget(self)
-        label_container.setFixedHeight(50)  # Set the height of the container to 50px
-
-        # Set a larger font for the labels
-        label_font = QFont()
-        label_font.setPointSize(24)
-
-        # Create a grid layout for the labels within the container
-        label_grid = QGridLayout(label_container)
-        labels = ["Name", "Channel", "Cue", "Time"]
-        for i, label_text in enumerate(labels):
-            label = QLabel(label_text, self)
-            label.setFont(label_font)
-            label.setAlignment(Qt.AlignCenter)
-            label.setStyleSheet("background-color: lightgray;")
-            label_grid.addWidget(label, 0, i)
-
-        # Create a widget for the input fields with a background color
-        self.input_container = QWidget(self)
-        self.input_container.setStyleSheet("background-color: #222222;")
-        
-        # Create a grid layout for the input fields
-        self.input_grid = QGridLayout(self.input_container)
-        self.input_fields = []
-        for i in range(len(labels)):
-            input_field = QLineEdit(self)
-            input_field.setPlaceholderText(f"Enter {labels[i]}")
-            input_field.setFixedHeight(40)
-            input_field.setStyleSheet("color: black; padding: 5px;")
-            input_field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            self.input_fields.append(input_field)
-            self.input_grid.addWidget(input_field, 0, i)
-        
-        # Add the label container to the first row of the main grid layout
-        main_layout.addWidget(label_container, 0, 0, 1, len(labels))
-
-        # Add the input container to the second row of the main grid layout
-        main_layout.addWidget(self.input_container, 1, 0, 1, len(labels))
+        # Create and set up the input fields, labels, and scroll area as before...
 
         # Create a scrollable area below the input fields
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
         self.scroll_content = QWidget()
         self.scroll_content.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.scroll_layout = QVBoxLayout(self.scroll_content)
+        self.scroll_layout = QGridLayout(self.scroll_content)
         self.scroll_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
         self.scroll_layout.setSpacing(0)  # Remove spacing
         self.scroll_content.setLayout(self.scroll_layout)
@@ -102,7 +65,7 @@ class Tab1(QWidget):
 
         # Add the scrollable area to the main layout
         main_layout.addWidget(self.scroll_area, 2, 0, 1, len(labels))  # Span across all columns below input fields
-        
+
         # Create a widget for the right side of the page
         right_side_widget = QWidget(self)
         right_side_widget.setStyleSheet("background-color: lightcoral;")
