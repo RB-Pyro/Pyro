@@ -234,32 +234,106 @@ class Tab2(QWidget):
         # Return to main page after unarm is pressed
         self.main_window.show_main_page()
 
+
+class Tab3(QWidget):
+    def __init__(self, main_window):
+        super().__init__()
+        self.main_window = main_window
+        layout = QVBoxLayout(self)
+        label = QLabel("This is Tab 3", self)
+        layout.addWidget(label)
+
+        # Add the back button
+        back_button_layout = QHBoxLayout()
+        back_button_layout.addStretch()
+        back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
+        back_button.clicked.connect(self.go_back)
+        back_button_layout.addWidget(back_button)
+        layout.addLayout(back_button_layout)
+
+        self.setLayout(layout)
+
+
+class SettingsWindow(QWidget):
+    def __init__(self, main_window):
+        super().__init__()
+        self.main_window = main_window
+        self.setWindowTitle('Settings')
+        self.setGeometry(200, 200, 400, 300)
+        layout = QVBoxLayout(self)
+        label = QLabel("Settings", self)
+        layout.addWidget(label)
+
+        # Add settings layout and widgets here
+        # For example, you can add checkboxes, sliders, etc.
+
+        self.setLayout(layout)
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("PyQt5 Main Window")
-        self.setGeometry(100, 100, 800, 600)
 
-        # Create a stacked widget for the main and tab widgets
-        self.stacked_widget = QStackedWidget(self)
-        self.setCentralWidget(self.stacked_widget)
+        # Set up the main window
+        self.setWindowTitle('Main Window')
+        self.setGeometry(100, 100, 1920, 1080)
 
-        # Create instances of tabs
+        # Create central widget and set layout
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.stack = QStackedWidget(self.central_widget)
+        self.vbox_layout = QVBoxLayout(self.central_widget)
+        self.vbox_layout.addWidget(self.stack)
+
+        # Create the main page widget
+        self.main_page = QWidget()
+        self.stack.addWidget(self.main_page)
+        self.grid_layout = QGridLayout(self.main_page)
+
+        # Create buttons
+        self.button1 = QPushButton('Button 1', self.main_page)
+        self.button2 = QPushButton('Button 2', self.main_page)
+        self.button3 = QPushButton('Button 3', self.main_page)
+        self.settings_button = QPushButton('Settings', self.main_page)
+
+        # Set button sizes
+        self.button1.setFixedSize(300, 300)
+        self.button2.setFixedSize(300, 300)
+        self.button3.setFixedSize(300, 300)
+        self.settings_button.setFixedSize(300, 300)
+
+        # Add buttons to the grid layout
+        self.grid_layout.addWidget(self.button1, 0, 0)
+        self.grid_layout.addWidget(self.button2, 0, 1)
+        self.grid_layout.addWidget(self.button3, 0, 2)
+        self.grid_layout.addWidget(self.settings_button, 1, 1)
+
+        # Connect buttons to methods
+        self.button1.clicked.connect(lambda: self.show_tab(1))
+        self.button2.clicked.connect(lambda: self.show_tab(2))
+        self.button3.clicked.connect(lambda: self.show_tab(3))
+        self.settings_button.clicked.connect(self.show_settings)
+
+        # Create tab pages
         self.tab1 = Tab1(self)
         self.tab2 = Tab2(self)
+        self.tab3 = Tab3(self)
+        self.stack.addWidget(self.tab1)
+        self.stack.addWidget(self.tab2)
+        self.stack.addWidget(self.tab3)
 
-        # Add tabs to the stacked widget
-        self.stacked_widget.addWidget(self.tab1)
-        self.stacked_widget.addWidget(self.tab2)
-
-        # Show the main page initially
+        # Initially show the main page
         self.show_main_page()
 
-    def show_main_page(self):
-        self.stacked_widget.setCurrentWidget(self.tab1)
+    def show_tab(self, tab_index):
+        self.stack.setCurrentIndex(tab_index)
 
-    def show_tab2(self):
-        self.stacked_widget.setCurrentWidget(self.tab2)
+    def show_main_page(self):
+        self.stack.setCurrentIndex(0)
+
+    def show_settings(self):
+        self.settings_window = SettingsWindow(self)
+        self.settings_window.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
