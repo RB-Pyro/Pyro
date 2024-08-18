@@ -14,7 +14,6 @@ class ScrollableItem(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
         layout.setSpacing(10)  # Add spacing between widgets
-        layout.addStretch()  # Ensure the layout expands
 
         # Create and set up the label
         self.label = QLabel(text, self)
@@ -34,10 +33,12 @@ class ScrollableItem(QWidget):
         layout.addWidget(self.delete_button)
 
         layout.addStretch()  # Ensure the layout expands
+        self.setLayout(layout)
 
     def delete_item(self):
         # Remove the widget from its parent
         self.setParent(None)
+
 
 
 class Tab1(QWidget):
@@ -154,7 +155,6 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
 
 
 
