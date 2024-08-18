@@ -189,77 +189,140 @@ class Tab2(QWidget):
         super().__init__()
         self.main_window = main_window
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(10, 10, 10, 10)  # Add some margins to the main layout
-        self.setStyleSheet("background-color: lightblue; color: black;")  # Set a background color for the main widget and text color
-        self.system_armed = False
-        # Create a grid layout for the arm and reset buttons
-        top_layout = QGridLayout()
-        show_time = 0.00 #placeholder
 
-        self.show_timer = QLabel(f'Show Timer: \n{show_time}',self)
-        self.show_timer.setStyleSheet("background-color: white; color: #222222; font-size: 24px;")
-        self.show_timer.setFixedSize(200, 100)
-        self.show_timer.setAlignment(Qt.AlignCenter)
-
-        # Add Arm System button
+        # Add Arm System button at the top right
         self.arm_button = QPushButton('Arm System', self)
         self.arm_button.setFixedSize(250, 100)
-        self.arm_button.setStyleSheet("background-color: green; color: black;")
+        self.arm_button.setStyleSheet("background-color: green; color: white;")
         self.arm_button.clicked.connect(self.show_confirmation_dialog)
 
-        # Add Unarm System button
         self.reset_arm = QPushButton('Unarm System', self)
         self.reset_arm.setFixedSize(250, 100)
         self.reset_arm.setStyleSheet("background-color: yellow; color: black;")
         self.reset_arm.clicked.connect(self.reset_system)
 
-        # Add buttons to the grid layout
-        top_layout.addWidget(self.show_timer,0,0,1,2)
-        top_layout.addWidget(self.arm_button, 1, 0)
-        top_layout.addWidget(self.reset_arm, 1, 1)
-
-        # Add top layout to the main layout
+        top_layout = QHBoxLayout()
+        top_layout.addStretch()  # This pushes the button to the right
+        top_layout.addWidget(self.arm_button)
+        
         main_layout.addLayout(top_layout)
+
+        # Define an integer variable
+        self.tab_number = 1 # You can change this to any integer
+
+        # Create a QLabel to display the integer in a box
+        self.label = QLabel(f"Channel #:  {self.tab_number}", self)
+        self.label.setFixedSize(300, 50)  # Set a fixed size for the box
+        self.label.setAlignment(Qt.AlignCenter)  # Center the text
+        self.label.setStyleSheet("border: 2px solid black; padding: 10px;")  # Add a border and padding
+
+        # Create buttons and set their fixed size to match the label's height
+        left_button = QPushButton('<', self)
+        left_button.setFixedSize(50, 50)  # Set size to match label's height
+        left_button.clicked.connect(self.decrease_mod_num)
+
+        right_button = QPushButton('>', self)
+        right_button.setFixedSize(50, 50)  # Set size to match label's height
+        right_button.clicked.connect(self.increase_mod_num)
+
+        # Create a horizontal layout to center the label and add buttons
+        label_layout = QHBoxLayout()
+        label_layout.addStretch()  # Pushes the content to the center
+        label_layout.addWidget(left_button)  # Add left button
+        label_layout.addWidget(self.label)  # Add the label
+        label_layout.addWidget(right_button)  # Add right button
+        label_layout.addStretch()  # Pushes the content to the center
+
+        main_layout.addLayout(label_layout)  # Add the centered layout to the main layout
+
+        # Create the grid layout
+        grid_layout = QGridLayout()
+
+        # Add 20 buttons to the first 4x5 cells of the grid with circles
+        self.buttons = []
+        self.circles = []
+        for i in range(4):
+            for j in range(5):
+                button_layout = QHBoxLayout()
+                button = QPushButton(f'CUE {i*5 + j + 1}', self)
+                button.setFixedSize(150, 150)
+                button.clicked.connect(self.create_button_callback(i, j))
+                self.buttons.append(button)
+                button_layout.addWidget(button)
+
+                circle = CircleLabel()
+                self.circles.append(circle)
+                button_layout.addWidget(circle)
+                grid_layout.addLayout(button_layout, i, j)
+
+        main_layout.addLayout(grid_layout)
+
+        # Add the back button
+        back_button_layout = QHBoxLayout()
+        back_button_layout.addStretch()
+        back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
+        back_button.clicked.connect(self.go_back)
+        back_button_layout.addWidget(back_button)
+        main_layout.addLayout(back_button_layout)
+
         self.setLayout(main_layout)
 
     def show_confirmation_dialog(self):
         dialog = QDialog(self)
         dialog.setWindowTitle("Confirmation")
-        dialog.setStyleSheet("background-color: lightgray; color: black;")  # Set a background color for the dialog and text color
-
         layout = QVBoxLayout(dialog)
 
-        label = QLabel("Are you sure you want to arm the system?", dialog)
+        label = QLabel("Confirm you want to arm system", dialog)
         layout.addWidget(label)
 
-        button_layout = QHBoxLayout()
-        confirm_button = QPushButton("Yes", dialog)
-        cancel_button = QPushButton("No", dialog)
-        button_layout.addWidget(confirm_button)
-        button_layout.addWidget(cancel_button)
+        yes_button = QPushButton("YES", dialog)
+        yes_button.clicked.connect(lambda: self.confirm_arm(dialog))
+        layout.addWidget(yes_button)
 
-        layout.addLayout(button_layout)
+        no_button = QPushButton("NO", dialog)
+        no_button.clicked.connect(lambda: self.cancel_arm(dialog))
+        layout.addWidget(no_button)
 
-        confirm_button.clicked.connect(self.arm_system)
-        cancel_button.clicked.connect(dialog.reject)
+        dialog.setLayout(layout)
+        dialog.exec_()  # Show the dialog modally
 
-        dialog.exec_()
+    def confirm_arm(self, dialog):
+        self.arm_system()
+        dialog.accept()  # Close the dialog
+
+    def cancel_arm(self, dialog):
+        self.reset_system()
+        dialog.accept()  # Close the dialog
 
     def arm_system(self):
-        self.system_armed = True
-        self.arm_button.setText("System Armed")
+        self.arm_button.setText('!SYSTEM ARMED!')
         self.arm_button.setStyleSheet("background-color: red; color: white;")
-        self.show_timer.setText("Show Timer: \n00.00")
-        # Return to main page after arm is pressed
-        self.main_window.show_main_page()
 
     def reset_system(self):
-        self.system_armed = False
         self.arm_button.setText("Arm System")
-        self.arm_button.setStyleSheet("background-color: green; color: black;")
-        self.show_timer.setText("Show Timer: \n00.00")
-        # Return to main page after unarm is pressed
+        self.arm_button.setStyleSheet("background-color: green; color: white;")
+
+    def create_button_callback(self, row, col):
+        def callback():
+            print(f'Button at {row}, {col} clicked')
+            # Add individual functionality here
+        return callback
+
+    def set_circle_color(self, index, color):
+        self.circles[index].set_color(color)
+
+    def go_back(self):
         self.main_window.show_main_page()
+
+    def decrease_mod_num(self):
+        if self.tab_number > 1:
+            self.tab_number -= 1
+        self.label.setText(f"Channel #:  {self.tab_number}")
+
+    def increase_mod_num(self):
+        self.tab_number += 1
+        self.label.setText(f"Channel #:  {self.tab_number}")
 
 
 class Tab3(QWidget):
