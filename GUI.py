@@ -254,6 +254,10 @@ class Tab3(QWidget):
 
         self.setLayout(layout)
 
+    def go_back(self):
+        self.main_window.show_main_page()
+
+
 
 class SettingsWindow(QWidget):
     def __init__(self, main_window):
