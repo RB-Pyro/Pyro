@@ -1,4 +1,5 @@
 import sys
+import csv
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, 
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
                              QScrollArea, QSizePolicy,QSpacerItem)
@@ -54,6 +55,8 @@ class ScrollableItem(QWidget):
 
 
 
+
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -61,6 +64,10 @@ class Tab1(QWidget):
 
         # Define labels at the class level
         self.labels = ["Name", "Channel", "Cue", "Time"]
+
+        # Initialize the dictionary to store input data
+        self.input_data = {}
+        self.scrollable_data = []  # To store the scrollable area data
 
         # Use QGridLayout for the main layout
         main_layout = QGridLayout(self)
@@ -153,12 +160,15 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Retrieve text from input fields
-        texts = [input_field.text() for input_field in self.input_fields]
+        # Retrieve text from input fields and store in the dictionary
+        self.input_data = {label: input_field.text() for label, input_field in zip(self.labels, self.input_fields)}
 
-        # Create a new ScrollableItem with the text from the input fields
-        if any(texts):
-            combined_text = " | ".join(texts)
+        # Add the data to scrollable_data
+        if any(self.input_data.values()):  # Check if any data is entered
+            self.scrollable_data.append(self.input_data.copy())  # Store a copy of the input data
+
+            # Create a new ScrollableItem with the text from the input fields
+            combined_text = " | ".join(f"{key}: {value}" for key, value in self.input_data.items())
             item = ScrollableItem(combined_text, self)
             self.scroll_layout.addWidget(item)
 
@@ -171,9 +181,17 @@ class Tab1(QWidget):
         if self.input_fields:
             self.input_fields[0].setFocus()
 
+    def export_to_csv(self, filename):
+        # Export scrollable_data to a CSV file
+        if self.scrollable_data:
+            with open(filename, 'w', newline='') as file:
+                writer = csv.DictWriter(file, fieldnames=self.labels)
+                writer.writeheader()
+                writer.writerows(self.scrollable_data)
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
