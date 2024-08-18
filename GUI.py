@@ -193,16 +193,15 @@ class Tab1(QWidget):
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
-        # Retrieve text from input fields and store in the dictionary
+        # Retrieve text from input fields and store it in the dictionary
         self.input_data = {label: input_field.text() for label, input_field in zip(self.labels, self.input_fields)}
 
         # Add the data to scrollable_data
         if any(self.input_data.values()):  # Check if any data is entered
             self.scrollable_data.append(self.input_data.copy())  # Store a copy of the input data
 
-            # Create a new ScrollableItem with the combined string and the input_data dictionary
-            combined_values = " | ".join(self.input_data.values())
-            item = ScrollableItem(combined_values, self.input_data.copy(), self)
+            # Create a new ScrollableItem with the input data dictionary
+            item = ScrollableItem(self.input_data.copy(), self)
             self.scroll_layout.addWidget(item)
 
         # Clear input fields and reset placeholders
@@ -213,6 +212,7 @@ class Tab1(QWidget):
         # Set focus back to the first input field
         if self.input_fields:
             self.input_fields[0].setFocus()
+
 
 
 
