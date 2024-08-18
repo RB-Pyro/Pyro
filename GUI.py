@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt, QTimer
 
 
 class ScrollableItem(QWidget):
-    def __init__(self, text, parent=None):
+    def __init__(self, values, parent=None):
         super().__init__(parent)
         self.setFixedHeight(50)  # Set the height to 50px
 
@@ -26,12 +26,16 @@ class ScrollableItem(QWidget):
         hbox_layout.setSpacing(10)  # Add spacing between widgets
 
         # Create and set up the label with black text color
-        self.label = QLabel(text, self)
+        self.label = QLabel(values, self)
         self.label.setStyleSheet("color: black; padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         # Add a spacer to push the label to fill available space
         hbox_layout.addWidget(self.label)  # Add label to the layout with expansion
+
+        # Create and add a stretchable spacer item before the buttons
+        hspacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        hbox_layout.addItem(hspacer)
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
@@ -41,17 +45,13 @@ class ScrollableItem(QWidget):
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
         self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
-        self.delete_button.setStyleSheet("background-color: lightcoral; color: black;")  # Light red color
+        self.delete_button.setStyleSheet("background-color: lightcoral;")  # Light red color
         self.delete_button.clicked.connect(self.delete_item)
         hbox_layout.addWidget(self.delete_button)  # Add delete button to the layout
 
     def delete_item(self):
-        # Remove this widget from its parent widget
-        if self.parentWidget():
-            self.setParent(None)
-            self.deleteLater()  # Ensure the widget is properly deleted from memory
-
-
+        # Remove the widget from its parent
+        self.setParent(None)
 
 
 
@@ -167,9 +167,9 @@ class Tab1(QWidget):
         if any(self.input_data.values()):  # Check if any data is entered
             self.scrollable_data.append(self.input_data.copy())  # Store a copy of the input data
 
-            # Create a new ScrollableItem with the text from the input fields
-            combined_text = " | ".join(f"{key}: {value}" for key, value in self.input_data.items())
-            item = ScrollableItem(combined_text, self)
+            # Create a new ScrollableItem with the values from the input fields
+            combined_values = " | ".join(self.input_data.values())
+            item = ScrollableItem(combined_values, self)
             self.scroll_layout.addWidget(item)
 
         # Clear input fields and reset placeholders
@@ -180,6 +180,7 @@ class Tab1(QWidget):
         # Set focus back to the first input field
         if self.input_fields:
             self.input_fields[0].setFocus()
+
 
     def export_to_csv(self, filename):
         # Export scrollable_data to a CSV file
