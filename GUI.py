@@ -6,23 +6,28 @@ from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QTimer
 
 class ScrollableItem(QWidget):
-    def __init__(self, texts, parent=None):
+    def __init__(self, text, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(50)  # Set the height of the widget to 50px
+        self.setFixedHeight(50)  # Set the height to 50px
+        self.setLayout(QHBoxLayout())
         
-        layout = QGridLayout(self)
+        # Create and set up the label
+        self.label = QLabel(text, self)
+        self.label.setStyleSheet("padding: 5px;")
+        self.layout().addWidget(self.label)
         
-        for i, text in enumerate(texts):
-            label = QLabel(text, self)
-            label.setStyleSheet("border: 1px solid black; padding: 5px;")
-            layout.addWidget(label, 0, i)
-        
-        self.setLayout(layout)
+        # Create and set up the edit button
+        self.edit_button = QPushButton("Edit", self)
+        self.layout().addWidget(self.edit_button)
 
+        # Create and set up the delete button
+        self.delete_button = QPushButton("Delete", self)
+        self.delete_button.clicked.connect(self.delete_item)
+        self.layout().addWidget(self.delete_button)
     
     def delete_item(self):
         # Remove the widget from its parent
-        self.setParent(None)  
+        self.setParent(None)
 
 class Tab1(QWidget):
     def __init__(self, main_window):
@@ -75,8 +80,7 @@ class Tab1(QWidget):
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
         self.scroll_content = QWidget()
-        # Create a grid layout for the scroll_content
-        self.scroll_layout = QGridLayout(self.scroll_content)
+        self.scroll_layout = QVBoxLayout(self.scroll_content)
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll_area.setWidget(self.scroll_content)
         
@@ -111,31 +115,31 @@ class Tab1(QWidget):
         main_layout.addWidget(left_side_widget, 2, len(labels), 2, 1)  # Column len(labels), spanning 2 rows
         
         # Adjust the back button placement
-        self.back_button = QPushButton('Back to Main', self)
-        self.back_button.setFixedHeight(50)
-        self.back_button.clicked.connect(self.go_back)
-        main_layout.addWidget(self.back_button, 4, 0, 1, len(labels) + 1)
+        back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
+        back_button.clicked.connect(self.go_back)
+        main_layout.addWidget(back_button, 4, 0, 1, len(labels) + 1)
 
         self.setLayout(main_layout)
 
     def handle_button1_click(self):
+        # Retrieve text from input fields
         texts = [input_field.text() for input_field in self.input_fields]
-        
+
+        # Create a new ScrollableItem with the text from the input fields
         if any(texts):
-            item = ScrollableItem(texts)
+            combined_text = " | ".join(texts)
+            item = ScrollableItem(combined_text, self)
             self.scroll_layout.addWidget(item)
-            self.scroll_layout.setAlignment(item, Qt.AlignTop)
-            
-            # Clear input fields and reset placeholders
-            for input_field in self.input_fields:
-                input_field.clear()
-                input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
-
-
+        # Clear input fields and reset placeholders
+        for input_field in self.input_fields:
+            input_field.clear()
+            input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
