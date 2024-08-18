@@ -167,6 +167,11 @@ class Tab1(QWidget):
             input_field.clear()
             input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
 
+        # Set focus back to the first input field
+        if self.input_fields:
+            self.input_fields[0].setFocus()
+
+
     def go_back(self):
         self.main_window.show_main_page()
 
