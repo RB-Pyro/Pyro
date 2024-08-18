@@ -9,7 +9,9 @@ class ScrollableItem(QWidget):
     def __init__(self, text, parent=None):
         super().__init__(parent)
         self.setFixedHeight(50)  # Set the height to 50px
-        layout = QHBoxLayout()
+
+        # Create a horizontal box layout for the item
+        layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
         layout.setSpacing(10)  # Add spacing between widgets
         self.setLayout(layout)
@@ -18,7 +20,7 @@ class ScrollableItem(QWidget):
         self.label = QLabel(text, self)
         self.label.setStyleSheet("padding: 5px;")
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        layout.addWidget(self.label, 1)  # Stretch factor of 1 for label to occupy space
+        layout.addWidget(self.label)  # Add label with expanding size policy
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
@@ -35,22 +37,23 @@ class ScrollableItem(QWidget):
         # Remove the widget from its parent
         self.setParent(None)
 
+
 class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        
+
         # Use QGridLayout for the main layout
         main_layout = QGridLayout(self)
-        
+
         # Create a QWidget with fixed height for the labels
         label_container = QWidget(self)
         label_container.setFixedHeight(50)  # Set the height of the container to 50px
-        
+
         # Set a larger font for the labels
         label_font = QFont()
         label_font.setPointSize(24)
-        
+
         # Create a grid layout for the labels within the container
         label_grid = QGridLayout(label_container)
         labels = ["Name", "Channel", "Cue", "Time"]
@@ -60,7 +63,7 @@ class Tab1(QWidget):
             label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("background-color: lightgray;")
             label_grid.addWidget(label, 0, i)
-        
+
         # Create a widget for the input fields with a background color
         self.input_container = QWidget(self)
         self.input_container.setStyleSheet("background-color: #222222;")
@@ -78,20 +81,21 @@ class Tab1(QWidget):
         
         # Add the label container to the first row of the main grid layout
         main_layout.addWidget(label_container, 0, 0, 1, len(labels))
-        
+
         # Add the input container to the second row of the main grid layout
         main_layout.addWidget(self.input_container, 1, 0, 1, len(labels))
-        
+
         # Create a scrollable area below the input fields
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
         self.scroll_content = QWidget()
+        self.scroll_content.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.scroll_layout = QVBoxLayout(self.scroll_content)
         self.scroll_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
         self.scroll_layout.setSpacing(0)  # Remove spacing
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll_area.setWidget(self.scroll_content)
-        
+
         # Add the scrollable area to the main layout
         main_layout.addWidget(self.scroll_area, 2, 0, 1, len(labels))  # Span across all columns below input fields
         
@@ -147,8 +151,6 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
-
 
 
 
