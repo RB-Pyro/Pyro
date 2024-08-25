@@ -171,6 +171,7 @@ class Tab1(QWidget):
         
         # Connect Button 1 to a method that handles input data
         button1.clicked.connect(self.handle_button1_click)
+        button2.clicked.connect(self.export_to_csv)
         
         # Add buttons to the grid layout
         right_side_grid.addWidget(button1, 0, 0)
