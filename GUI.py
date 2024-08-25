@@ -15,7 +15,7 @@ class ScrollableItem(QWidget):
         self.values = values_dict
         self.setFixedHeight(50)
         self.setAcceptDrops(True)  # Accept drops
-        
+
         # Background color, text color, and border styling
         self.setStyleSheet("""
             background-color: lightblue;
@@ -55,7 +55,6 @@ class ScrollableItem(QWidget):
         hbox_layout.addWidget(self.delete_button)
 
     def mousePressEvent(self, event):
-        # Start drag operation
         if event.button() == Qt.LeftButton:
             self.drag_start_position = event.pos()
             self.is_selected = not self.is_selected  # Toggle selection state
@@ -63,10 +62,17 @@ class ScrollableItem(QWidget):
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton:
+            # Start the drag operation
             drag = QDrag(self)
             mime_data = QMimeData()
             drag.setMimeData(mime_data)
-            drag.setHotSpot(event.pos())
+
+            # Create a pixmap of the widget to use as the drag image
+            drag_pixmap = self.grab()  # Grab the widget's current appearance
+            drag.setPixmap(drag_pixmap)
+            drag.setHotSpot(event.pos())  # Set the hotspot to the cursor position
+
+            # Execute the drag and drop operation
             drop_action = drag.exec_(Qt.MoveAction)
 
     def dragEnterEvent(self, event):
@@ -76,8 +82,10 @@ class ScrollableItem(QWidget):
         else:
             event.ignore()
 
+    def dragMoveEvent(self, event):
+        event.accept()
+
     def dropEvent(self, event):
-        # Emit a signal to reorder items
         event.setDropAction(Qt.MoveAction)
         event.accept()
 
@@ -127,6 +135,7 @@ class ScrollableItem(QWidget):
             label.show()
 
         self.edit_button.setText("Edit")
+
 
 
 
