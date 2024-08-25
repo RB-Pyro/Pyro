@@ -246,8 +246,12 @@ class Tab1(QWidget):
                 QMessageBox.warning(file_name_dialog, "Invalid Name", "Please enter a valid file name.")
                 return
             
-            # Get the desktop path
-            desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+            # Get the desktop path based on the platform
+            if os.name == 'nt':  # For Windows
+                desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+            else:  # For macOS and Linux
+                desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
+
             full_path = os.path.join(desktop_path, file_name + ".csv")
             
             # Save the CSV file
@@ -262,6 +266,7 @@ class Tab1(QWidget):
         save_button.clicked.connect(save_file)
         
         file_name_dialog.exec_()
+
 
 
     def go_back(self):
