@@ -244,7 +244,20 @@ class Tab1(QWidget):
 
         # Add the right-side widget to the main layout
         main_layout.addWidget(right_side_widget, 0, len(self.labels), 3, 1)  # Span all rows on the right side
+        # Add another widget below the red one on the left
+        left_side_widget = QWidget(self)
+        left_side_widget.setStyleSheet("background-color: lightgreen;")
+        main_layout.addWidget(left_side_widget, 2, len(self.labels), 2, 1)  # Column len(labels), spanning 2 rows
+        
+        # Adjust the back button placement
+        back_button = QPushButton('Back to Main', self)
+        back_button.setFixedHeight(50)
+        back_button.clicked.connect(self.go_back)
+        main_layout.addWidget(back_button, 4, 0, 1, len(self.labels) + 1)
 
+        self.setLayout(main_layout)
+
+        
     def handle_button1_click(self):
         # Collect input data and add it to the scrollable area
         input_values = {label: field.text() for label, field in zip(self.labels, self.input_fields)}
