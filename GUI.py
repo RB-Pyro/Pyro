@@ -173,6 +173,7 @@ class Tab1(QWidget):
         # Connect Button 1 to a method that handles input data
         button1.clicked.connect(self.handle_button1_click)
         button2.clicked.connect(self.export_to_csv)
+        button3.clicked.connect(self.import_from_csv)  # Connect button3 to import method
         
         # Add buttons to the grid layout
         right_side_grid.addWidget(button1, 0, 0)
@@ -214,9 +215,6 @@ class Tab1(QWidget):
         # Set focus back to the first input field
         if self.input_fields:
             self.input_fields[0].setFocus()
-
-
-
 
     def export_to_csv(self):
         if not self.scrollable_data:
@@ -268,29 +266,27 @@ class Tab1(QWidget):
         file_name_dialog.exec_()
 
     def import_from_csv(self):
-            # Open file dialog to select the CSV file
-            file_name, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv)")
-            if not file_name:
-                return  # User canceled the dialog
+        # Open file dialog to select the CSV file
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv)")
+        if not file_name:
+            return  # User canceled the dialog
 
-            # Clear the current scrollable area
-            self.scrollable_data = []
-            for i in reversed(range(self.scroll_layout.count())):
-                widget = self.scroll_layout.itemAt(i).widget()
-                if widget is not None:
-                    widget.deleteLater()
+        # Clear the current scrollable area
+        self.scrollable_data = []
+        for i in reversed(range(self.scroll_layout.count())):
+            widget = self.scroll_layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
 
-            # Read data from the CSV file
-            with open(file_name, 'r') as file:
-                reader = csv.DictReader(file)
-                self.scrollable_data = list(reader)  # Store data into scrollable_data
+        # Read data from the CSV file
+        with open(file_name, 'r') as file:
+            reader = csv.DictReader(file)
+            self.scrollable_data = list(reader)  # Store data into scrollable_data
 
-                # Add data to the scrollable area
-                for data in self.scrollable_data:
-                    item = ScrollableItem(data, self)
-                    self.scroll_layout.addWidget(item)
-
-
+            # Add data to the scrollable area
+            for data in self.scrollable_data:
+                item = ScrollableItem(data, self)
+                self.scroll_layout.addWidget(item)
 
     def go_back(self):
         self.main_window.show_main_page()
