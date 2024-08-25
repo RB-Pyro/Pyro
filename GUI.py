@@ -5,11 +5,15 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QV
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
                              QScrollArea, QSizePolicy,QSpacerItem,QMessageBox,QFileDialog,)
 from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont,QDrag
-from PyQt5.QtCore import Qt, QTimer,QMimeData
+from PyQt5.QtCore import Qt, QTimer,QMimeData,pyqtSignal
 
 
 
 class ScrollableItem(QWidget):
+    drag_start = pyqtSignal(object)  # Signal to notify when drag starts
+    drag_end = pyqtSignal()  # Signal to notify when drag ends
+
+
     def __init__(self, values_dict, parent=None):
         super().__init__(parent)
         self.values = values_dict
@@ -62,25 +66,29 @@ class ScrollableItem(QWidget):
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton:
-            # Start the drag operation
+            if (event.pos() - self.drag_start_position).manhattanLength() < QApplication.startDragDistance():
+                return  # Ignore small movements
+
+            # Notify the parent that dragging started
+            self.drag_start.emit(self)
+
             drag = QDrag(self)
             mime_data = QMimeData()
             drag.setMimeData(mime_data)
 
-            # Create a pixmap of the widget to use as the drag image
-            drag_pixmap = self.grab()  # Grab the widget's current appearance
+            # Set the drag pixmap and hot spot
+            drag_pixmap = self.grab()
             drag.setPixmap(drag_pixmap)
-            drag.setHotSpot(event.pos())  # Set the hotspot to the cursor position
+            drag.setHotSpot(event.pos())
 
-            # Execute the drag and drop operation
             drop_action = drag.exec_(Qt.MoveAction)
 
+            # Notify the parent that dragging ended
+            self.drag_end.emit()
+
     def dragEnterEvent(self, event):
-        if event.source() == self:
-            event.setDropAction(Qt.MoveAction)
-            event.accept()
-        else:
-            event.ignore()
+        event.setDropAction(Qt.MoveAction)
+        event.accept()
 
     def dragMoveEvent(self, event):
         event.accept()
@@ -88,6 +96,14 @@ class ScrollableItem(QWidget):
     def dropEvent(self, event):
         event.setDropAction(Qt.MoveAction)
         event.accept()
+
+        # Handle reordering of the item
+        if self.parent().dragged_item:
+            parent_widget = self.parent()
+            scroll_layout = parent_widget.layout()
+            drop_position = scroll_layout.indexOf(self)  # Get the current position of the dropped item
+            parent_widget.reorder_items(parent_widget.dragged_item, drop_position)
+
 
     def update_style(self):
         # Update the style for selection
@@ -144,6 +160,7 @@ class Tab1(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
+        self.dragged_item = None  # To track the item being dragged
 
         # Define labels at the class level
         self.labels = ["Name", "Channel", "Cue", "Time"]
@@ -193,19 +210,19 @@ class Tab1(QWidget):
         # Add the input container to the second row of the main grid layout
         main_layout.addWidget(self.input_container, 1, 0, 1, len(self.labels))
 
-        # Create a scrollable area below the input fields
+     # Create a scrollable area below the input fields
         self.scroll_area = QScrollArea(self)
-        self.scroll_area.setWidgetResizable(True)  # Allow the content to resize within the scroll area
+        self.scroll_area.setWidgetResizable(True)
         self.scroll_content = QWidget()
         self.scroll_content.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.scroll_layout = QGridLayout(self.scroll_content)
-        self.scroll_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
-        self.scroll_layout.setSpacing(0)  # Remove spacing
+        self.scroll_layout = QVBoxLayout(self.scroll_content)  # Use QVBoxLayout for easier positioning
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll_area.setWidget(self.scroll_content)
 
         # Add the scrollable area to the main layout
         main_layout.addWidget(self.scroll_area, 2, 0, 1, len(self.labels))  # Span across all columns below input fields
+
+        
 
         # Create a widget for the right side of the page
         right_side_widget = QWidget(self)
@@ -264,6 +281,29 @@ class Tab1(QWidget):
         # Set focus back to the first input field
         if self.input_fields:
             self.input_fields[0].setFocus()
+
+          # Add new ScrollableItem
+        item = ScrollableItem(self.input_data.copy(), self)
+        item.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the item is deleted when closed
+        item.drag_start.connect(self.start_drag)  # Connect drag start signal
+        item.drag_end.connect(self.end_drag)  # Connect drag end signal
+        self.scroll_layout.addWidget(item)
+
+    def start_drag(self, item):
+        self.dragged_item = item
+
+    def end_drag(self):
+        self.dragged_item = None
+
+    def reorder_items(self, dropped_item, position):
+        # Remove the dropped item from the layout
+        index = self.scroll_layout.indexOf(dropped_item)
+        if index >= 0:
+            widget_item = self.scroll_layout.takeAt(index)
+            widget_item.widget().setParent(None)
+
+        # Insert the dropped item at the new position
+        self.scroll_layout.insertWidget(position, dropped_item)
 
     def export_to_csv(self):
         if not self.scrollable_data:
