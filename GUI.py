@@ -3,7 +3,7 @@ import os
 import csv
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, 
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
-                             QScrollArea, QSizePolicy,QSpacerItem,QMessageBox)
+                             QScrollArea, QSizePolicy,QSpacerItem,QMessageBox,QFileDialog)
 from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QTimer
 
@@ -266,6 +266,29 @@ class Tab1(QWidget):
         save_button.clicked.connect(save_file)
         
         file_name_dialog.exec_()
+
+    def import_from_csv(self):
+            # Open file dialog to select the CSV file
+            file_name, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv)")
+            if not file_name:
+                return  # User canceled the dialog
+
+            # Clear the current scrollable area
+            self.scrollable_data = []
+            for i in reversed(range(self.scroll_layout.count())):
+                widget = self.scroll_layout.itemAt(i).widget()
+                if widget is not None:
+                    widget.deleteLater()
+
+            # Read data from the CSV file
+            with open(file_name, 'r') as file:
+                reader = csv.DictReader(file)
+                self.scrollable_data = list(reader)  # Store data into scrollable_data
+
+                # Add data to the scrollable area
+                for data in self.scrollable_data:
+                    item = ScrollableItem(data, self)
+                    self.scroll_layout.addWidget(item)
 
 
 
