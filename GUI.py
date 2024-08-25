@@ -1,8 +1,9 @@
 import sys
+import os
 import csv
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, 
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
-                             QScrollArea, QSizePolicy,QSpacerItem)
+                             QScrollArea, QSizePolicy,QSpacerItem,QMessageBox)
 from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QTimer
 
@@ -217,13 +218,51 @@ class Tab1(QWidget):
 
 
 
-    def export_to_csv(self, filename):
-        # Export scrollable_data to a CSV file
-        if self.scrollable_data:
-            with open(filename, 'w', newline='') as file:
+    def export_to_csv(self):
+        if not self.scrollable_data:
+            QMessageBox.warning(self, "No Data", "There is no data to export.")
+            return
+
+        # Create a pop-up dialog for file name input
+        file_name_dialog = QDialog(self)
+        file_name_dialog.setWindowTitle("Save CSV")
+
+        layout = QVBoxLayout(file_name_dialog)
+        
+        label = QLabel("Enter file name:", file_name_dialog)
+        layout.addWidget(label)
+
+        file_name_input = QLineEdit(file_name_dialog)
+        file_name_input.setPlaceholderText("File name")
+        layout.addWidget(file_name_input)
+
+        save_button = QPushButton("Save", file_name_dialog)
+        layout.addWidget(save_button)
+
+        # Define the behavior when the save button is clicked
+        def save_file():
+            file_name = file_name_input.text().strip()
+            if not file_name:
+                QMessageBox.warning(file_name_dialog, "Invalid Name", "Please enter a valid file name.")
+                return
+            
+            # Get the desktop path
+            desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+            full_path = os.path.join(desktop_path, file_name + ".csv")
+            
+            # Save the CSV file
+            with open(full_path, 'w', newline='') as file:
                 writer = csv.DictWriter(file, fieldnames=self.labels)
                 writer.writeheader()
                 writer.writerows(self.scrollable_data)
+            
+            QMessageBox.information(self, "Success", f"File saved to {full_path}")
+            file_name_dialog.accept()  # Close the dialog
+
+        save_button.clicked.connect(save_file)
+        
+        file_name_dialog.exec_()
+
 
     def go_back(self):
         self.main_window.show_main_page()
