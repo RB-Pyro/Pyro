@@ -5,14 +5,13 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QV
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
                              QScrollArea, QSizePolicy,QSpacerItem,QMessageBox,QFileDialog,)
 from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont,QDrag
-from PyQt5.QtCore import Qt, QTimer,QMimeData,pyqtSignal
+from PyQt5.QtCore import Qt, QTimer,QMimeData,pyqtSignal,QStandardPaths
 
 
 
 class ScrollableItem(QWidget):
     drag_start = pyqtSignal(object)  # Signal to notify when drag starts
     drag_end = pyqtSignal()  # Signal to notify when drag ends
-
 
     def __init__(self, values_dict, parent=None):
         super().__init__(parent)
@@ -98,12 +97,11 @@ class ScrollableItem(QWidget):
         event.accept()
 
         # Handle reordering of the item
-        if self.parent().dragged_item:
-            parent_widget = self.parent()
-            scroll_layout = parent_widget.layout()
+        parent_widget = self.parent()
+        if isinstance(parent_widget, Tab1) and parent_widget.dragged_item:
+            scroll_layout = parent_widget.scroll_layout
             drop_position = scroll_layout.indexOf(self)  # Get the current position of the dropped item
             parent_widget.reorder_items(parent_widget.dragged_item, drop_position)
-
 
     def update_style(self):
         # Update the style for selection
@@ -151,6 +149,7 @@ class ScrollableItem(QWidget):
             label.show()
 
         self.edit_button.setText("Edit")
+
 
 
 
@@ -210,7 +209,7 @@ class Tab1(QWidget):
         # Add the input container to the second row of the main grid layout
         main_layout.addWidget(self.input_container, 1, 0, 1, len(self.labels))
 
-     # Create a scrollable area below the input fields
+        # Create a scrollable area below the input fields
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
         self.scroll_content = QWidget()
@@ -221,8 +220,6 @@ class Tab1(QWidget):
 
         # Add the scrollable area to the main layout
         main_layout.addWidget(self.scroll_area, 2, 0, 1, len(self.labels))  # Span across all columns below input fields
-
-        
 
         # Create a widget for the right side of the page
         right_side_widget = QWidget(self)
@@ -239,155 +236,83 @@ class Tab1(QWidget):
         # Connect Button 1 to a method that handles input data
         button1.clicked.connect(self.handle_button1_click)
         button2.clicked.connect(self.export_to_csv)
-        button3.clicked.connect(self.import_from_csv)  # Connect button3 to import method
+        button3.clicked.connect(self.import_csv)
         
-        # Add buttons to the grid layout
         right_side_grid.addWidget(button1, 0, 0)
         right_side_grid.addWidget(button2, 1, 0)
         right_side_grid.addWidget(button3, 2, 0)
         
-        main_layout.addWidget(right_side_widget, 0, len(self.labels), 2, 1)  # Spanning all rows on the right
-        
-        # Add another widget below the red one on the left
-        left_side_widget = QWidget(self)
-        left_side_widget.setStyleSheet("background-color: lightgreen;")
-        main_layout.addWidget(left_side_widget, 2, len(self.labels), 2, 1)  # Column len(labels), spanning 2 rows
-        
-        # Adjust the back button placement
-        back_button = QPushButton('Back to Main', self)
-        back_button.setFixedHeight(50)
-        back_button.clicked.connect(self.go_back)
-        main_layout.addWidget(back_button, 4, 0, 1, len(self.labels) + 1)
+        # Add the right side widget to the main layout
+        main_layout.addWidget(right_side_widget, 1, len(self.labels), 2, 1)  # Adjust row and column span as needed
 
-        self.setLayout(main_layout)
+        # Create the back button and add it below the input fields
+        back_button = QPushButton("Back", self)
+        back_button.clicked.connect(self.go_back)
+        main_layout.addWidget(back_button, 2, len(self.labels))  # Position below the scrollable area
 
     def handle_button1_click(self):
-        # Retrieve text from input fields and store it in the dictionary
-        self.input_data = {label: input_field.text() for label, input_field in zip(self.labels, self.input_fields)}
+        # Gather input data from the input fields
+        input_values = [field.text() for field in self.input_fields]
+        
+        # Create a dictionary from the labels and input values
+        input_dict = dict(zip(self.labels, input_values))
+        
+        # Add the input data to the scrollable area
+        self.add_to_scrollable_area(input_dict)
+        
+        # Clear input fields
+        for field in self.input_fields:
+            field.clear()
 
-        # Add the data to scrollable_data
-        if any(self.input_data.values()):  # Check if any data is entered
-            self.scrollable_data.append(self.input_data.copy())  # Store a copy of the input data
-
-            # Create a new ScrollableItem with the input data dictionary
-            item = ScrollableItem(self.input_data.copy(), self)
-            self.scroll_layout.addWidget(item)
-
-        # Clear input fields and reset placeholders
-        for input_field in self.input_fields:
-            input_field.clear()
-            input_field.setPlaceholderText(f"Enter {input_field.placeholderText().split(' ')[1]}")
-
-        # Set focus back to the first input field
-        if self.input_fields:
-            self.input_fields[0].setFocus()
-
-          # Add new ScrollableItem
-        item = ScrollableItem(self.input_data.copy(), self)
-        item.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the item is deleted when closed
-        item.drag_start.connect(self.start_drag)  # Connect drag start signal
-        item.drag_end.connect(self.end_drag)  # Connect drag end signal
+    def add_to_scrollable_area(self, input_dict):
+        item = ScrollableItem(input_dict, self)
+        item.drag_start.connect(self.on_drag_start)
+        item.drag_end.connect(self.on_drag_end)
         self.scroll_layout.addWidget(item)
+        self.scrollable_data.append(input_dict)  # Save data for export
 
-    def start_drag(self, item):
+    def on_drag_start(self, item):
         self.dragged_item = item
 
-    def end_drag(self):
+    def on_drag_end(self):
         self.dragged_item = None
 
-    def reorder_items(self, dropped_item, position):
-        # Remove the dropped item from the layout
-        index = self.scroll_layout.indexOf(dropped_item)
+    def reorder_items(self, dragged_item, drop_position):
+        index = self.scroll_layout.indexOf(dragged_item)
         if index >= 0:
-            widget_item = self.scroll_layout.takeAt(index)
-            widget_item.widget().setParent(None)
-
-        # Insert the dropped item at the new position
-        self.scroll_layout.insertWidget(position, dropped_item)
-
+            self.scroll_layout.removeWidget(dragged_item)
+            dragged_item.setParent(None)
+            if drop_position < len(self.scroll_layout):
+                self.scroll_layout.insertWidget(drop_position, dragged_item)
+            else:
+                self.scroll_layout.addWidget(dragged_item)
+    
     def export_to_csv(self):
-        if not self.scrollable_data:
-            QMessageBox.warning(self, "No Data", "There is no data to export.")
-            return
+        # Open a dialog to get the file name
+        file_name, _ = QFileDialog.getSaveFileName(self, "Save File", QStandardPaths.writableLocation(QStandardPaths.DesktopLocation), "CSV Files (*.csv)")
+        if file_name:
+            if not file_name.endswith('.csv'):
+                file_name += '.csv'
+            with open(file_name, 'w', newline='') as file:
+                writer = csv.writer(file)
+                # Write the header
+                writer.writerow(self.labels)
+                # Write the data
+                for data in self.scrollable_data:
+                    writer.writerow([data.get(label, '') for label in self.labels])
 
-        # Create a pop-up dialog for file name input
-        file_name_dialog = QDialog(self)
-        file_name_dialog.setWindowTitle("Save CSV")
-
-        layout = QVBoxLayout(file_name_dialog)
-        
-        label = QLabel("Enter file name:", file_name_dialog)
-        layout.addWidget(label)
-
-        file_name_input = QLineEdit(file_name_dialog)
-        file_name_input.setPlaceholderText("File name")
-        layout.addWidget(file_name_input)
-
-        save_button = QPushButton("Save", file_name_dialog)
-        layout.addWidget(save_button)
-
-        # Define the behavior when the save button is clicked
-        def save_file():
-            file_name = file_name_input.text().strip()
-            if not file_name:
-                QMessageBox.warning(file_name_dialog, "Invalid Name", "Please enter a valid file name.")
-                return
-            
-            # Get the desktop path based on the platform
-            if os.name == 'nt':  # For Windows
-                desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-            else:  # For macOS and Linux
-                desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
-
-            full_path = os.path.join(desktop_path, file_name + ".csv")
-            
-            # Save the CSV file
-            with open(full_path, 'w', newline='') as file:
-                writer = csv.DictWriter(file, fieldnames=self.labels)
-                writer.writeheader()
-                writer.writerows(self.scrollable_data)
-            
-            QMessageBox.information(self, "Success", f"File saved to {full_path}")
-            file_name_dialog.accept()  # Close the dialog
-
-        save_button.clicked.connect(save_file)
-        
-        file_name_dialog.exec_()
-
-    def import_from_csv(self):
-        # Open file dialog to select the CSV file
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv)")
-        if not file_name:
-            return  # User canceled the dialog
-
-        # Clear the current scrollable area
-        self.scrollable_data = []
-        for i in reversed(range(self.scroll_layout.count())):
-            widget = self.scroll_layout.itemAt(i).widget()
-            if widget is not None:
-                widget.deleteLater()
-
-        # Read data from the CSV file
-        with open(file_name, 'r') as file:
-            reader = csv.DictReader(file)
-            self.scrollable_data = list(reader)  # Store data into scrollable_data
-
-            # Add data to the scrollable area
-            for data in self.scrollable_data:
-                item = ScrollableItem(data, self)
-                self.scroll_layout.addWidget(item)
+    def import_csv(self):
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open File", QStandardPaths.writableLocation(QStandardPaths.DesktopLocation), "CSV Files (*.csv)")
+        if file_name:
+            with open(file_name, 'r') as file:
+                reader = csv.reader(file)
+                headers = next(reader)  # Read the header row
+                for row in reader:
+                    input_dict = dict(zip(headers, row))
+                    self.add_to_scrollable_area(input_dict)
 
     def go_back(self):
-        self.main_window.show_main_page()
-
-    def reorder_items(self, dragged_widget, target_widget):
-        # Reorder items in the scroll_layout
-        dragged_index = self.scroll_layout.indexOf(dragged_widget)
-        target_index = self.scroll_layout.indexOf(target_widget)
-
-        # Swap positions in the layout
-        self.scroll_layout.insertWidget(target_index, dragged_widget)
-        self.scroll_layout.insertWidget(dragged_index, target_widget)
+        self.main_window.setCurrentIndex(0)
 
 
 
