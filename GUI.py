@@ -3,9 +3,9 @@ import os
 import csv
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, 
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
-                             QScrollArea, QSizePolicy,QSpacerItem,QMessageBox,QFileDialog)
-from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont
-from PyQt5.QtCore import Qt, QTimer
+                             QScrollArea, QSizePolicy,QSpacerItem,QMessageBox,QFileDialog,)
+from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont,QDrag
+from PyQt5.QtCore import Qt, QTimer,QMimeData
 
 
 
@@ -13,21 +13,26 @@ class ScrollableItem(QWidget):
     def __init__(self, values_dict, parent=None):
         super().__init__(parent)
         self.values = values_dict
-        self.setFixedHeight(50)  # Set the height to 50px
-
-        # Set the background color to light blue, text color to black, and add a black border
+        self.setFixedHeight(50)
+        self.setAcceptDrops(True)  # Accept drops
+        
+        # Background color, text color, and border styling
         self.setStyleSheet("""
             background-color: lightblue;
             color: black;
             border: 3px solid black;
         """)
 
+        # Enable mouse tracking for selection
+        self.setMouseTracking(True)
+        self.is_selected = False  # Flag for selection state
+        
         # Create a horizontal box layout for the item
         hbox_layout = QHBoxLayout(self)
-        hbox_layout.setContentsMargins(10, 0, 10, 0)  # Add horizontal margins
-        hbox_layout.setSpacing(10)  # Add spacing between widgets
+        hbox_layout.setContentsMargins(10, 0, 10, 0)
+        hbox_layout.setSpacing(10)
 
-        # Create QLabel widgets for each value in the dictionary and add them to the layout
+        # QLabel widgets for each value in the dictionary
         self.labels = []
         for key, value in self.values.items():
             label = QLabel(value, self)
@@ -38,19 +43,60 @@ class ScrollableItem(QWidget):
 
         # Create and set up the edit button
         self.edit_button = QPushButton("Edit", self)
-        self.edit_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
+        self.edit_button.setFixedSize(80, 40)
         self.edit_button.clicked.connect(self.toggle_edit_save)
-        hbox_layout.addWidget(self.edit_button)  # Add edit button to the layout
+        hbox_layout.addWidget(self.edit_button)
 
         # Create and set up the delete button
         self.delete_button = QPushButton("Delete", self)
-        self.delete_button.setFixedSize(80, 40)  # Set height to 40px and width to 80px
-        self.delete_button.setStyleSheet("background-color: lightcoral;")  # Light red color
+        self.delete_button.setFixedSize(80, 40)
+        self.delete_button.setStyleSheet("background-color: lightcoral;")
         self.delete_button.clicked.connect(self.delete_item)
-        hbox_layout.addWidget(self.delete_button)  # Add delete button to the layout
+        hbox_layout.addWidget(self.delete_button)
+
+    def mousePressEvent(self, event):
+        # Start drag operation
+        if event.button() == Qt.LeftButton:
+            self.drag_start_position = event.pos()
+            self.is_selected = not self.is_selected  # Toggle selection state
+            self.update_style()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == Qt.LeftButton:
+            drag = QDrag(self)
+            mime_data = QMimeData()
+            drag.setMimeData(mime_data)
+            drag.setHotSpot(event.pos())
+            drop_action = drag.exec_(Qt.MoveAction)
+
+    def dragEnterEvent(self, event):
+        if event.source() == self:
+            event.setDropAction(Qt.MoveAction)
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        # Emit a signal to reorder items
+        event.setDropAction(Qt.MoveAction)
+        event.accept()
+
+    def update_style(self):
+        # Update the style for selection
+        if self.is_selected:
+            self.setStyleSheet("""
+                background-color: darkblue;
+                color: white;
+                border: 3px solid yellow;
+            """)
+        else:
+            self.setStyleSheet("""
+                background-color: lightblue;
+                color: black;
+                border: 3px solid black;
+            """)
 
     def delete_item(self):
-        # Remove the widget from its parent
         self.setParent(None)
 
     def toggle_edit_save(self):
@@ -60,7 +106,6 @@ class ScrollableItem(QWidget):
             self.save_edits()
 
     def switch_to_edit_mode(self):
-        # Replace labels with line edits
         self.line_edits = []
         for label in self.labels:
             line_edit = QLineEdit(label.text(), self)
@@ -69,15 +114,12 @@ class ScrollableItem(QWidget):
             self.layout().replaceWidget(label, line_edit)
             label.hide()
             self.line_edits.append(line_edit)
-
         self.edit_button.setText("Save")
 
     def save_edits(self):
-        # Save the values from the line edits back into the dictionary
         for key, line_edit in zip(self.values.keys(), self.line_edits):
             self.values[key] = line_edit.text()
 
-        # Replace line edits with updated labels
         for label, line_edit in zip(self.labels, self.line_edits):
             label.setText(line_edit.text())
             self.layout().replaceWidget(line_edit, label)
@@ -85,8 +127,6 @@ class ScrollableItem(QWidget):
             label.show()
 
         self.edit_button.setText("Edit")
-
-
 
 
 
@@ -290,6 +330,15 @@ class Tab1(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
+    def reorder_items(self, dragged_widget, target_widget):
+        # Reorder items in the scroll_layout
+        dragged_index = self.scroll_layout.indexOf(dragged_widget)
+        target_index = self.scroll_layout.indexOf(target_widget)
+
+        # Swap positions in the layout
+        self.scroll_layout.insertWidget(target_index, dragged_widget)
+        self.scroll_layout.insertWidget(dragged_index, target_widget)
 
 
 
