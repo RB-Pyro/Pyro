@@ -3,7 +3,7 @@ import os
 import csv
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, 
                              QStackedWidget, QMainWindow, QLabel, QDialog, QLineEdit, QCheckBox, 
-                             QScrollArea, QSizePolicy,QSpacerItem,QMessageBox,QFileDialog,)
+                             QScrollArea, QSizePolicy,QSpacerItem,QMessageBox,QFileDialog,QProgressBar)
 from PyQt5.QtGui import QPainter, QBrush, QColor, QPalette, QFont,QDrag
 from PyQt5.QtCore import Qt, QTimer,QMimeData,pyqtSignal,QStandardPaths
 
@@ -451,8 +451,12 @@ class Tab3(QWidget):
         super().__init__()
         self.main_window = main_window
         layout = QVBoxLayout(self)
-        label = QLabel("This is Tab 3", self)
-        layout.addWidget(label)
+        
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setRange(0, 100)  # Set the range (0 to 100)
+        self.progress_bar.setValue(0)  # Initially set the progress to 0
+        self.layout.addWidget(self.progress_bar)  # Add the progress bar to the layout
+        
 
         # Add the back button
         back_button_layout = QHBoxLayout()
