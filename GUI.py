@@ -450,50 +450,49 @@ class Tab3(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
+        
+        # Create a grid layout
+        layout = QGridLayout(self)
 
-        # Main layout
-        layout = QVBoxLayout(self)
-
-        # Progress bar at the top
+        # Add the progress bar at the top, spanning across the entire row
         self.progress_bar = QProgressBar(self)
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
-        self.progress_bar.setFixedHeight(30)  # Increase the height for better visibility
-        layout.addWidget(self.progress_bar)
+        self.progress_bar.setFixedHeight(40)  # Make the progress bar thicker
+        layout.addWidget(self.progress_bar, 0, 0, 1, 3)  # Span across 3 columns
 
-        # Start button
-        start_button = QPushButton('Start Progress', self)
-        start_button.clicked.connect(self.start_progress)
-        layout.addWidget(start_button)
+        # Add the start button under the progress bar
+        self.start_button = QPushButton('Start Progress', self)
+        self.start_button.setFixedHeight(50)
+        self.start_button.clicked.connect(self.start_progress)
+        layout.addWidget(self.start_button, 1, 0, 1, 3)  # Span across 3 columns
 
-        # Add the back button
+        # Add the back button at the bottom
         back_button_layout = QHBoxLayout()
         back_button_layout.addStretch()
         back_button = QPushButton('Back to Main', self)
         back_button.setFixedHeight(50)
         back_button.clicked.connect(self.go_back)
         back_button_layout.addWidget(back_button)
-        layout.addLayout(back_button_layout)
+        layout.addLayout(back_button_layout, 2, 0, 1, 3)  # Span across 3 columns
 
         self.setLayout(layout)
 
-        # Timer for progress bar
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_progress)
-
     def start_progress(self):
-        self.progress_bar.setValue(0)  # Reset progress
-        self.timer.start(1000)  # Update every second
+        self.progress = 0
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_progress)
+        self.timer.start(1000)  # 1000 ms = 1 second
 
     def update_progress(self):
-        current_value = self.progress_bar.value()
-        if current_value < 100:
-            self.progress_bar.setValue(current_value + 10)  # Increase progress by 10%
-        else:
-            self.timer.stop()  # Stop the timer once progress reaches 100%
+        self.progress += 10
+        self.progress_bar.setValue(self.progress)
+        if self.progress >= 100:
+            self.timer.stop()
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
