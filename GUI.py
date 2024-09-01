@@ -450,15 +450,17 @@ class Tab3(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
+        
+        # Create a QVBoxLayout for Tab3
         layout = QVBoxLayout(self)
         
+        # Create and add a progress bar at the top
         self.progress_bar = QProgressBar(self)
         self.progress_bar.setRange(0, 100)  # Set the range (0 to 100)
         self.progress_bar.setValue(0)  # Initially set the progress to 0
-        self.layout.addWidget(self.progress_bar)  # Add the progress bar to the layout
+        layout.addWidget(self.progress_bar)  # Add the progress bar to the layout
         
-
-        # Add the back button
+        # Add the back button with its own layout
         back_button_layout = QHBoxLayout()
         back_button_layout.addStretch()
         back_button = QPushButton('Back to Main', self)
@@ -467,6 +469,7 @@ class Tab3(QWidget):
         back_button_layout.addWidget(back_button)
         layout.addLayout(back_button_layout)
 
+        # Set the layout for the Tab3 widget
         self.setLayout(layout)
 
     def go_back(self):
