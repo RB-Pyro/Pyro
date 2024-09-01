@@ -450,18 +450,23 @@ class Tab3(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        
-        # Create a QVBoxLayout for Tab3
+
+        # Main layout
         layout = QVBoxLayout(self)
-        
-        # Create and add a progress bar at the top
+
+        # Progress bar at the top
         self.progress_bar = QProgressBar(self)
-        self.progress_bar.setRange(0, 100)  # Set the range (0 to 100)
-        self.progress_bar.setValue(0)  # Initially set the progress to 0
-        self.progress_bar.setFixedHeight(30)  # Make the progress bar thicker (adjust the height as needed)
-        layout.addWidget(self.progress_bar)  # Add the progress bar to the layout
-        
-        # Add the back button with its own layout
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setFixedHeight(30)  # Increase the height for better visibility
+        layout.addWidget(self.progress_bar)
+
+        # Start button
+        start_button = QPushButton('Start Progress', self)
+        start_button.clicked.connect(self.start_progress)
+        layout.addWidget(start_button)
+
+        # Add the back button
         back_button_layout = QHBoxLayout()
         back_button_layout.addStretch()
         back_button = QPushButton('Back to Main', self)
@@ -470,11 +475,26 @@ class Tab3(QWidget):
         back_button_layout.addWidget(back_button)
         layout.addLayout(back_button_layout)
 
-        # Set the layout for the Tab3 widget
         self.setLayout(layout)
+
+        # Timer for progress bar
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_progress)
+
+    def start_progress(self):
+        self.progress_bar.setValue(0)  # Reset progress
+        self.timer.start(1000)  # Update every second
+
+    def update_progress(self):
+        current_value = self.progress_bar.value()
+        if current_value < 100:
+            self.progress_bar.setValue(current_value + 10)  # Increase progress by 10%
+        else:
+            self.timer.stop()  # Stop the timer once progress reaches 100%
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
