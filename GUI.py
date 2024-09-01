@@ -461,8 +461,19 @@ class Tab3(QWidget):
         
         # Set a fixed height for the progress bar
         self.progress_bar.setFixedHeight(60)  # Adjust this value as needed
-        # Optionally, use a style sheet for more control over appearance
-        self.progress_bar.setStyleSheet("QProgressBar::chunk { background: #00ff00; }")  # Example for chunk color
+        
+        # Use style sheet to set background color and fill color
+        self.progress_bar.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid #000000;  /* Border color */
+                border-radius: 10px;
+                background-color: #e0e0e0;  /* Background color for the unfilled part */
+            }
+            QProgressBar::chunk {
+                background-color: #76c7c0;  /* Color for the filled part */
+                width: 20px;  /* Width of each chunk, adjust as needed */
+            }
+        """)
         
         layout.addWidget(self.progress_bar, 0, 0, 1, 3)  # Span across 3 columns
 
@@ -497,6 +508,7 @@ class Tab3(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
+
 
 
 
