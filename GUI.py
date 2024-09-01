@@ -458,7 +458,12 @@ class Tab3(QWidget):
         self.progress_bar = QProgressBar(self)
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
-        self.progress_bar.setFixedHeight(40)  # Make the progress bar thicker
+        
+        # Set a fixed height for the progress bar
+        self.progress_bar.setFixedHeight(60)  # Adjust this value as needed
+        # Optionally, use a style sheet for more control over appearance
+        self.progress_bar.setStyleSheet("QProgressBar::chunk { background: #00ff00; }")  # Example for chunk color
+        
         layout.addWidget(self.progress_bar, 0, 0, 1, 3)  # Span across 3 columns
 
         # Add the start button under the progress bar
@@ -492,8 +497,6 @@ class Tab3(QWidget):
 
     def go_back(self):
         self.main_window.show_main_page()
-
-
 
 
 
