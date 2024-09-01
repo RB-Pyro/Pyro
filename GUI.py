@@ -458,6 +458,7 @@ class Tab3(QWidget):
         self.progress_bar = QProgressBar(self)
         self.progress_bar.setRange(0, 100)  # Set the range (0 to 100)
         self.progress_bar.setValue(0)  # Initially set the progress to 0
+        self.progress_bar.setFixedHeight(30)  # Make the progress bar thicker (adjust the height as needed)
         layout.addWidget(self.progress_bar)  # Add the progress bar to the layout
         
         # Add the back button with its own layout
